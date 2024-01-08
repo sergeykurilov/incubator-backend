@@ -25,7 +25,7 @@ router.post("/", (req: Request<{}, {}, CreateVideoType>, res: Response) => {
   const validationErrors = validateVideoInput(req.body);
 
   if (validationErrors) {
-    res.status(400).json(validationErrors);
+    res.status(400).json({ errorsMessages: validationErrors.errorMessages });
   } else {
     const newVideo = videoService.createVideo({
       ...req.body,
@@ -54,17 +54,19 @@ router.put(
 
     const validationErrors = validateVideoInput(req.body);
     if (validationErrors) {
-      return res.status(400).json(validationErrors);
+      res.status(400).json({ errorsMessages: validationErrors.errorMessages });
+    } else {
+      const success = videoService.updateVideoById(id, req.body);
+      if (success) {
+        return res.sendStatus(204);
+      } else {
+        return res.status(400).send({
+          errorsMessages: [{ message: "Update failed", field: "videoData" }],
+        });
+      }
     }
 
-    const success = videoService.updateVideoById(id, req.body);
-    if (success) {
-      return res.sendStatus(204);
-    } else {
-      return res.status(400).send({
-        errorsMessages: [{ message: "Update failed", field: "videoData" }],
-      });
-    }
+    return;
   },
 );
 
