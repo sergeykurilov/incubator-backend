@@ -98,9 +98,12 @@ router.put("/:id", (req, res) => {
   }
 
   if (publicationDate !== undefined) {
-    // You can add validation for the publicationDate field here if needed.
-    // For example, checking if it's a valid date format.
-    // Validation code for publicationDate is not provided in the original schema.
+    if (isNaN(Date.parse(publicationDate))) {
+      validationErrors.push({
+        field: "publicationDate",
+        message: "publicationDate must be a valid date",
+      });
+    }
   }
 
   if (validationErrors.length > 0) {
