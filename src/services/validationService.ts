@@ -1,4 +1,4 @@
-import { AvailableResolution, CreateVideoType } from "../types/videos";
+import { AvailableResolution, CreateVideoType, Video } from "../types/videos";
 
 interface ErrorMessage {
   field: string;
@@ -13,7 +13,15 @@ export const validateVideoInput = (
   reqBody: CreateVideoType,
 ): ErrorType | null => {
   const errors: ErrorType = { errorMessages: [] };
-  const { title, author, availableResolutions } = reqBody;
+  const { title, author, availableResolutions, canBeDownloaded } =
+    reqBody as Video;
+
+  if (canBeDownloaded !== undefined && typeof canBeDownloaded !== "boolean") {
+    errors.errorMessages.push({
+      field: "canBeDownloaded",
+      message: "canBeDownloaded must be a boolean",
+    });
+  }
 
   if (!title || typeof title !== "string" || title.trim().length > 40) {
     errors.errorMessages.push({
