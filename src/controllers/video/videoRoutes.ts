@@ -106,8 +106,11 @@ router.put("/:id", (req, res) => {
 
     // Publication Date validation
     if (publicationDate !== undefined && publicationDate !== null) {
-      const parsedDate = parseISO(publicationDate.toString());
-      if (!isValid(parsedDate)) {
+      // Check if publicationDate is a string and a valid ISO 8601 date
+      if (
+        typeof publicationDate !== "string" ||
+        !isValid(parseISO(publicationDate))
+      ) {
         validationErrors.push({
           field: "publicationDate",
           message: "publicationDate must be a valid ISO 8601 date",
