@@ -1,7 +1,8 @@
-import { NextFunction, Request, Response, Router } from "express";
+import { Request, Response, Router } from "express";
 import * as videoService from "../../services/videoService";
 import { CreateVideoType, Param, Video } from "../../types/videos";
 import { validateVideoInput } from "../../services/validationService";
+const { parseISO, isValid } = require("date-fns"); // date-fns library for date validation
 
 const router = Router();
 
@@ -35,8 +36,6 @@ router.post("/", (req: Request<{}, {}, CreateVideoType>, res: Response) => {
     res.status(201).json(newVideo);
   }
 });
-
-const { parseISO, isValid } = require("date-fns"); // date-fns library for date validation
 
 router.put("/:id", (req, res) => {
   const id = parseInt(req.params.id);
