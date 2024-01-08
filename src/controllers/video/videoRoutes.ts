@@ -56,6 +56,7 @@ router.put("/:id", (req, res) => {
     availableResolutions,
     canBeDownloaded,
     minAgeRestriction,
+    publicationDate,
   } = req.body;
 
   const validationErrors = [];
@@ -83,12 +84,23 @@ router.put("/:id", (req, res) => {
   }
 
   if (minAgeRestriction !== undefined) {
-    if (typeof minAgeRestriction !== "number" || minAgeRestriction < 0) {
+    if (
+      typeof minAgeRestriction !== "number" ||
+      minAgeRestriction < 1 ||
+      minAgeRestriction > 18
+    ) {
       validationErrors.push({
         field: "minAgeRestriction",
-        message: "minAgeRestriction must be a non-negative number",
+        message:
+          "minAgeRestriction must be a number between 1 and 18 (inclusive)",
       });
     }
+  }
+
+  if (publicationDate !== undefined) {
+    // You can add validation for the publicationDate field here if needed.
+    // For example, checking if it's a valid date format.
+    // Validation code for publicationDate is not provided in the original schema.
   }
 
   if (validationErrors.length > 0) {

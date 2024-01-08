@@ -96,7 +96,8 @@ describe("Video API Routes", () => {
       },
       {
         field: "minAgeRestriction",
-        message: "minAgeRestriction must be a non-negative number",
+        message:
+          "minAgeRestriction must be a number between 1 and 18 (inclusive)",
       },
     ]);
 
