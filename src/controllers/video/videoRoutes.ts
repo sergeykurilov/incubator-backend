@@ -36,77 +36,74 @@ router.post("/", (req: Request<{}, {}, CreateVideoType>, res: Response) => {
   }
 });
 
-router.put(
-  "/:id",
-  (req: Request<Param, {}, CreateVideoType>, res: Response) => {
-    const id = parseInt(String(req.params.id));
+router.put("/:id", (req, res) => {
+  const id = parseInt(req.params.id);
 
-    if (isNaN(id)) {
-      return res
-        .status(400)
-        .send({ errorsMessages: [{ message: "Invalid ID", field: "id" }] });
-    }
+  if (isNaN(id)) {
+    return res
+      .status(400)
+      .json({ errorsMessages: [{ message: "Invalid ID", field: "id" }] });
+  }
 
-    const videoToUpdate = videoService.findVideoById(id);
-    if (!videoToUpdate) {
-      return res.sendStatus(404);
-    }
+  const videoToUpdate = videoService.findVideoById(id);
+  if (!videoToUpdate) {
+    return res.sendStatus(404);
+  }
 
-    const {
-      title,
-      author,
-      availableResolutions,
-      canBeDownloaded,
-      minAgeRestriction,
-    } = req.body as Video;
+  const {
+    title,
+    author,
+    availableResolutions,
+    canBeDownloaded,
+    minAgeRestriction,
+  } = req.body;
 
-    const validationErrors = [];
+  const validationErrors = [];
 
-    if (!title || typeof title !== "string" || title.trim().length > 40) {
-      validationErrors.push({ field: "title", message: "Incorrect Title" });
-    }
+  if (!title || typeof title !== "string" || title.trim().length > 40) {
+    validationErrors.push({ field: "title", message: "Incorrect Title" });
+  }
 
-    if (!author || typeof author !== "string" || author.trim().length > 20) {
-      validationErrors.push({ field: "author", message: "Incorrect Author" });
-    }
+  if (!author || typeof author !== "string" || author.trim().length > 20) {
+    validationErrors.push({ field: "author", message: "Incorrect Author" });
+  }
 
-    if (!Array.isArray(availableResolutions)) {
+  if (!Array.isArray(availableResolutions)) {
+    validationErrors.push({
+      field: "availableResolutions",
+      message: "Incorrect availableResolutions",
+    });
+  }
+
+  if (typeof canBeDownloaded !== "boolean") {
+    validationErrors.push({
+      field: "canBeDownloaded",
+      message: "canBeDownloaded must be a boolean",
+    });
+  }
+
+  if (minAgeRestriction !== undefined) {
+    if (typeof minAgeRestriction !== "number" || minAgeRestriction < 0) {
       validationErrors.push({
-        field: "availableResolutions",
-        message: "Incorrect availableResolutions",
+        field: "minAgeRestriction",
+        message: "minAgeRestriction must be a non-negative number",
       });
     }
+  }
 
-    if (typeof canBeDownloaded !== "boolean") {
-      validationErrors.push({
-        field: "canBeDownloaded",
-        message: "canBeDownloaded must be a boolean",
-      });
-    }
+  if (validationErrors.length > 0) {
+    return res.status(400).json({ errorsMessages: validationErrors });
+  }
 
-    if (minAgeRestriction !== undefined) {
-      if (typeof minAgeRestriction !== "number" || minAgeRestriction < 0) {
-        validationErrors.push({
-          field: "minAgeRestriction",
-          message: "minAgeRestriction must be a non-negative number",
-        });
-      }
-    }
-
-    if (validationErrors.length > 0) {
-      return res.status(400).json({ errorsMessages: validationErrors });
-    }
-
-    const success = videoService.updateVideoById(id, req.body);
-    if (success) {
-      return res.sendStatus(204);
-    } else {
-      return res.status(400).send({
-        errorsMessages: [{ message: "Update failed", field: "videoData" }],
-      });
-    }
-  },
-);
+  const success = videoService.updateVideoById(id, req.body);
+  if (success) {
+    return res.sendStatus(204);
+  } else {
+    return res.status(400).json({
+      errorsMessages: [{ message: "Update failed", field: "videoData" }],
+    });
+  }
+});
 
 router.delete("/:id", (req: Request<Param>, res: Response) => {
   const id = +req.params.id;
