@@ -1,4 +1,4 @@
-import { Request, Response, Router } from "express";
+import { NextFunction, Request, Response, Router } from "express";
 import * as videoService from "../../services/videoService";
 import { CreateVideoType, Param, Video } from "../../types/videos";
 import { validateVideoInput } from "../../services/validationService";
@@ -82,9 +82,16 @@ router.delete("/:id", (req: Request<Param>, res: Response) => {
   }
 });
 
-router.delete("/testing/all-data", (req: Request, res: Response) => {
-  videoService.deleteAllVideos();
-  res.sendStatus(204);
-});
+router.delete(
+  "/testing/all-data",
+  (req: Request, res: Response, next: NextFunction) => {
+    try {
+      videoService.deleteAllVideos();
+      res.sendStatus(204);
+    } catch (error) {
+      next(error);
+    }
+  },
+);
 
 export default router;
