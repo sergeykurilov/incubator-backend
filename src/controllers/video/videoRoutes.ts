@@ -82,7 +82,7 @@ router.delete("/:id", (req: Request<Param>, res: Response) => {
   }
 });
 
-router.delete("/", (req: Request, res: Response) => {
+router.delete("/testing/all-data", (req: Request, res: Response) => {
   videoService.deleteAllVideos();
   res.sendStatus(204);
 });
