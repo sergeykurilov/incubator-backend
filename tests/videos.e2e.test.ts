@@ -74,14 +74,12 @@ describe("Video API Routes", () => {
     const videoId = createdVideo.id;
 
     const invalidData = {
-      id: videoId,
-      title: "Invalid Title",
-      author: "Invalid Author",
-      canBeDownloaded: "invalid",
-      minAgeRestriction: -1,
-      createdAt: "2024-01-02T15:40:19.154Z",
-      publicationDate: "2024-01-02T15:40:19.154Z",
-      availableResolutions: ["P144"],
+      author: "length_21-weqweqweqwq",
+      title: "valid title",
+      availableResolutions: ["P240", "P720"],
+      canBeDownloaded: true,
+      minAgeRestriction: 15,
+      publicationDate: 1995,
     };
 
     const response = await request(app)
@@ -91,13 +89,12 @@ describe("Video API Routes", () => {
     expect(response.status).toBe(400);
     expect(response.body.errorsMessages).toEqual([
       {
-        field: "canBeDownloaded",
-        message: "canBeDownloaded must be a boolean",
+        field: "author",
+        message: "Incorrect Author",
       },
       {
-        field: "minAgeRestriction",
-        message:
-          "minAgeRestriction must be a number between 1 and 18 (inclusive)",
+        field: "publicationDate",
+        message: "publicationDate must be a valid ISO 8601 date",
       },
     ]);
 
