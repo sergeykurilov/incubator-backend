@@ -13,8 +13,13 @@ export const validateVideoInput = (
   reqBody: CreateVideoType,
 ): ErrorType | null => {
   const errors: ErrorType = { errorMessages: [] };
-  const { title, author, availableResolutions, canBeDownloaded } =
-    reqBody as Video;
+  const {
+    title,
+    author,
+    availableResolutions,
+    canBeDownloaded,
+    minAgeRestriction,
+  } = reqBody as Video;
 
   if (canBeDownloaded !== undefined && typeof canBeDownloaded !== "boolean") {
     errors.errorMessages.push({
@@ -50,6 +55,16 @@ export const validateVideoInput = (
           message: "Invalid availableResolutions value",
         });
       }
+    });
+  }
+
+  if (
+    minAgeRestriction !== undefined &&
+    (typeof minAgeRestriction !== "number" || minAgeRestriction < 0)
+  ) {
+    errors.errorMessages.push({
+      field: "minAgeRestriction",
+      message: "Invalid minAgeRestriction",
     });
   }
 

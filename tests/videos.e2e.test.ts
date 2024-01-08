@@ -44,16 +44,16 @@ describe("Video API Routes", () => {
     expect(findVideoById(response.body.id)).toBeTruthy();
   });
 
-  it("PUT /videos/:id should update an existing video", async () => {
+  it("PUT /videos/:id should update an existing video with valid data", async () => {
     const createdVideo = createVideo(sampleVideo);
     const videoId = createdVideo.id;
 
     const updatedData = {
       id: videoId,
-      title: "222",
-      author: "123",
+      title: "Updated Title", // Update the title to valid data
+      author: "Updated Author", // Update the author to valid data
       canBeDownloaded: true,
-      minAgeRestriction: 12,
+      minAgeRestriction: 18, // Update minAgeRestriction to valid data
       createdAt: "2024-01-02T15:40:19.154Z",
       publicationDate: "2024-01-02T15:40:19.154Z",
       availableResolutions: ["P144"],
@@ -67,6 +67,38 @@ describe("Video API Routes", () => {
 
     const updatedVideo = findVideoById(videoId);
     expect(updatedVideo.title).toBe(updatedData.title);
+  });
+
+  it("PUT /videos/:id should return a 400 error with invalid data", async () => {
+    const createdVideo = createVideo(sampleVideo);
+    const videoId = createdVideo.id;
+
+    const invalidData = {
+      id: videoId,
+      title: "Invalid Title",
+      author: "Invalid Author",
+      canBeDownloaded: "invalid",
+      minAgeRestriction: -1,
+      createdAt: "2024-01-02T15:40:19.154Z",
+      publicationDate: "2024-01-02T15:40:19.154Z",
+      availableResolutions: ["P144"],
+    };
+
+    const response = await request(app)
+      .put(`/videos/${videoId}`)
+      .send(invalidData);
+
+    expect(response.status).toBe(400);
+    expect(response.body.errorsMessages).toEqual([
+      {
+        field: "canBeDownloaded",
+        message: "canBeDownloaded must be a boolean",
+      },
+      { field: "minAgeRestriction", message: "Invalid minAgeRestriction" },
+    ]);
+
+    const unchangedVideo = findVideoById(videoId);
+    expect(unchangedVideo.title).toBe(sampleVideo.title);
   });
 
   it("DELETE /api/videos/:id should delete an existing video", async () => {
