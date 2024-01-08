@@ -52,21 +52,59 @@ router.put(
       return res.sendStatus(404);
     }
 
-    const validationErrors = validateVideoInput(req.body);
-    if (validationErrors) {
-      res.status(400).json({ errorsMessages: validationErrors.errorMessages });
-    } else {
-      const success = videoService.updateVideoById(id, req.body);
-      if (success) {
-        return res.sendStatus(204);
-      } else {
-        return res.status(400).send({
-          errorsMessages: [{ message: "Update failed", field: "videoData" }],
+    const {
+      title,
+      author,
+      availableResolutions,
+      canBeDownloaded,
+      minAgeRestriction,
+    } = req.body as Video;
+
+    const validationErrors = [];
+
+    if (!title || typeof title !== "string" || title.trim().length > 40) {
+      validationErrors.push({ field: "title", message: "Incorrect Title" });
+    }
+
+    if (!author || typeof author !== "string" || author.trim().length > 20) {
+      validationErrors.push({ field: "author", message: "Incorrect Author" });
+    }
+
+    if (!Array.isArray(availableResolutions)) {
+      validationErrors.push({
+        field: "availableResolutions",
+        message: "Incorrect availableResolutions",
+      });
+    }
+
+    if (typeof canBeDownloaded !== "boolean") {
+      validationErrors.push({
+        field: "canBeDownloaded",
+        message: "canBeDownloaded must be a boolean",
+      });
+    }
+
+    if (minAgeRestriction !== undefined) {
+      if (typeof minAgeRestriction !== "number" || minAgeRestriction < 0) {
+        validationErrors.push({
+          field: "minAgeRestriction",
+          message: "minAgeRestriction must be a non-negative number",
         });
       }
     }
 
-    return;
+    if (validationErrors.length > 0) {
+      return res.status(400).json({ errorsMessages: validationErrors });
+    }
+
+    const success = videoService.updateVideoById(id, req.body);
+    if (success) {
+      return res.sendStatus(204);
+    } else {
+      return res.status(400).send({
+        errorsMessages: [{ message: "Update failed", field: "videoData" }],
+      });
+    }
   },
 );
 

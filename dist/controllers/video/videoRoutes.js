@@ -62,22 +62,46 @@ router.put("/:id", (req, res) => {
     if (!videoToUpdate) {
         return res.sendStatus(404);
     }
-    const validationErrors = (0, validationService_1.validateVideoInput)(req.body);
-    if (validationErrors) {
-        res.status(400).json({ errorsMessages: validationErrors.errorMessages });
+    const { title, author, availableResolutions, canBeDownloaded, minAgeRestriction, } = req.body;
+    const validationErrors = [];
+    if (!title || typeof title !== "string" || title.trim().length > 40) {
+        validationErrors.push({ field: "title", message: "Incorrect Title" });
     }
-    else {
-        const success = videoService.updateVideoById(id, req.body);
-        if (success) {
-            return res.sendStatus(204);
-        }
-        else {
-            return res.status(400).send({
-                errorsMessages: [{ message: "Update failed", field: "videoData" }],
+    if (!author || typeof author !== "string" || author.trim().length > 20) {
+        validationErrors.push({ field: "author", message: "Incorrect Author" });
+    }
+    if (!Array.isArray(availableResolutions)) {
+        validationErrors.push({
+            field: "availableResolutions",
+            message: "Incorrect availableResolutions",
+        });
+    }
+    if (typeof canBeDownloaded !== "boolean") {
+        validationErrors.push({
+            field: "canBeDownloaded",
+            message: "canBeDownloaded must be a boolean",
+        });
+    }
+    if (minAgeRestriction !== undefined) {
+        if (typeof minAgeRestriction !== "number" || minAgeRestriction < 0) {
+            validationErrors.push({
+                field: "minAgeRestriction",
+                message: "minAgeRestriction must be a non-negative number",
             });
         }
     }
-    return;
+    if (validationErrors.length > 0) {
+        return res.status(400).json({ errorsMessages: validationErrors });
+    }
+    const success = videoService.updateVideoById(id, req.body);
+    if (success) {
+        return res.sendStatus(204);
+    }
+    else {
+        return res.status(400).send({
+            errorsMessages: [{ message: "Update failed", field: "videoData" }],
+        });
+    }
 });
 router.delete("/:id", (req, res) => {
     const id = +req.params.id;
