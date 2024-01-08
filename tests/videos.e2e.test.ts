@@ -122,7 +122,7 @@ describe("Video API Routes", () => {
       availableResolutions: ["P240"],
     });
 
-    const response = await request(app).delete("/videos/testing/all-data");
+    const response = await request(app).delete("/testing/all-data");
     expect(response.status).toBe(204);
 
     expect(findAllVideos().length).toBe(0);

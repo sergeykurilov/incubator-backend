@@ -90,13 +90,4 @@ router.delete("/:id", (req, res) => {
         res.sendStatus(204);
     }
 });
-router.delete("/testing/all-data", (req, res, next) => {
-    try {
-        videoService.deleteAllVideos();
-        res.sendStatus(204);
-    }
-    catch (error) {
-        next(error);
-    }
-});
 exports.default = router;
