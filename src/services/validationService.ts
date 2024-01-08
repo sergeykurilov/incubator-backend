@@ -64,7 +64,7 @@ export const validateVideoInput = (
   ) {
     errors.errorMessages.push({
       field: "minAgeRestriction",
-      message: "Invalid minAgeRestriction",
+      message: "minAgeRestriction must be a non-negative number",
     });
   }
 

@@ -94,7 +94,10 @@ describe("Video API Routes", () => {
         field: "canBeDownloaded",
         message: "canBeDownloaded must be a boolean",
       },
-      { field: "minAgeRestriction", message: "Invalid minAgeRestriction" },
+      {
+        field: "minAgeRestriction",
+        message: "minAgeRestriction must be a non-negative number",
+      },
     ]);
 
     const unchangedVideo = findVideoById(videoId);
