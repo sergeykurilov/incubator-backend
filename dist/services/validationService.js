@@ -4,7 +4,13 @@ exports.validateVideoInput = void 0;
 const videos_1 = require("../types/videos");
 const validateVideoInput = (reqBody) => {
     const errors = { errorMessages: [] };
-    const { title, author, availableResolutions } = reqBody;
+    const { title, author, availableResolutions, canBeDownloaded, minAgeRestriction, } = reqBody;
+    if (canBeDownloaded !== undefined && typeof canBeDownloaded !== "boolean") {
+        errors.errorMessages.push({
+            field: "canBeDownloaded",
+            message: "canBeDownloaded must be a boolean",
+        });
+    }
     if (!title || typeof title !== "string" || title.trim().length > 40) {
         errors.errorMessages.push({
             field: "title",
@@ -31,6 +37,13 @@ const validateVideoInput = (reqBody) => {
                     message: "Invalid availableResolutions value",
                 });
             }
+        });
+    }
+    if (minAgeRestriction !== undefined &&
+        (typeof minAgeRestriction !== "number" || minAgeRestriction < 0)) {
+        errors.errorMessages.push({
+            field: "minAgeRestriction",
+            message: "minAgeRestriction must be a non-negative number",
         });
     }
     return errors.errorMessages.length ? errors : null;

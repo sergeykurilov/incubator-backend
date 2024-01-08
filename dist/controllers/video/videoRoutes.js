@@ -44,7 +44,7 @@ router.get("/:id", (req, res) => {
 router.post("/", (req, res) => {
     const validationErrors = (0, validationService_1.validateVideoInput)(req.body);
     if (validationErrors) {
-        res.status(400).json(validationErrors);
+        res.status(400).json({ errorsMessages: validationErrors.errorMessages });
     }
     else {
         const newVideo = videoService.createVideo(Object.assign(Object.assign({}, req.body), { canBeDownloaded: false, minAgeRestriction: null }));
@@ -64,17 +64,20 @@ router.put("/:id", (req, res) => {
     }
     const validationErrors = (0, validationService_1.validateVideoInput)(req.body);
     if (validationErrors) {
-        return res.status(400).json(validationErrors);
-    }
-    const success = videoService.updateVideoById(id, req.body);
-    if (success) {
-        return res.sendStatus(204);
+        res.status(400).json({ errorsMessages: validationErrors.errorMessages });
     }
     else {
-        return res.status(400).send({
-            errorsMessages: [{ message: "Update failed", field: "videoData" }],
-        });
+        const success = videoService.updateVideoById(id, req.body);
+        if (success) {
+            return res.sendStatus(204);
+        }
+        else {
+            return res.status(400).send({
+                errorsMessages: [{ message: "Update failed", field: "videoData" }],
+            });
+        }
     }
+    return;
 });
 router.delete("/:id", (req, res) => {
     const id = +req.params.id;
@@ -87,8 +90,13 @@ router.delete("/:id", (req, res) => {
         res.sendStatus(204);
     }
 });
-router.delete("/", (req, res) => {
-    videoService.deleteAllVideos();
-    res.sendStatus(204);
+router.delete("/testing/all-data", (req, res, next) => {
+    try {
+        videoService.deleteAllVideos();
+        res.sendStatus(204);
+    }
+    catch (error) {
+        next(error);
+    }
 });
 exports.default = router;
