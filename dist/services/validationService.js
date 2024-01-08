@@ -43,7 +43,7 @@ const validateVideoInput = (reqBody) => {
         (typeof minAgeRestriction !== "number" || minAgeRestriction < 0)) {
         errors.errorMessages.push({
             field: "minAgeRestriction",
-            message: "minAgeRestriction must be a non-negative number",
+            message: "Invalid minAgeRestriction",
         });
     }
     return errors.errorMessages.length ? errors : null;
