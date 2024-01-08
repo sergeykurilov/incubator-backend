@@ -2,8 +2,6 @@ import { Request, Response, Router } from "express";
 import * as videoService from "../../services/videoService";
 import { CreateVideoType, Param, Video } from "../../types/videos";
 import { validateVideoInput } from "../../services/validationService";
-import { updateVideoById } from "../../services/videoService";
-import { videos } from "../../settings";
 
 const router = Router();
 
@@ -43,26 +41,22 @@ router.put(
   (req: Request<Param, {}, CreateVideoType>, res: Response) => {
     const id = parseInt(String(req.params.id));
 
-    // Validate ID
     if (isNaN(id)) {
       return res
         .status(400)
         .send({ errorsMessages: [{ message: "Invalid ID", field: "id" }] });
     }
 
-    // Check if the video exists
     const videoToUpdate = videoService.findVideoById(id);
     if (!videoToUpdate) {
       return res.sendStatus(404);
     }
 
-    // Validate the request body
     const validationErrors = validateVideoInput(req.body);
     if (validationErrors) {
       return res.status(400).json(validationErrors);
     }
 
-    // Update the video
     const success = videoService.updateVideoById(id, req.body);
     if (success) {
       return res.sendStatus(204);

@@ -3,7 +3,7 @@ import router from "./controllers/router";
 
 export const app: Application = express();
 
-const port: string | number = process.env.PORT || 8000;
+const port: string | number = process.env.PORT || 3000;
 
 app.use(express.json());
 

@@ -1,6 +1,5 @@
 import { videos } from "../settings";
-import { CreateVideoType, ErrorType, Video } from "../types/videos";
-import { validateVideoInput } from "./validationService";
+import { CreateVideoType, Video } from "../types/videos";
 
 export const findAllVideos = (): Video[] => {
   return videos;
