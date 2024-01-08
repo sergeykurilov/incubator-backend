@@ -1,16 +1,9 @@
 import express, { Application } from "express";
 import router from "./controllers/router";
 
-export const app: Application = express();
-
-const port: string | number = process.env.PORT || 3000;
+const app: Application = express();
 
 app.use(express.json());
-
 app.use("/", router);
 
-const server = app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
-});
-
-module.exports = server;
+module.exports = app;
