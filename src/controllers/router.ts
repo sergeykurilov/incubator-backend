@@ -1,5 +1,5 @@
 import { Router } from "express";
-import videoRoutes from "./videoRoutes/videoRoutes";
+import videoRoutes from "./video/videoRoutes";
 
 const router = Router();
 
