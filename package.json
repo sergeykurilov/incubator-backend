@@ -4,18 +4,25 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
-    "express": "^4.18.2"
+    "@types/jest": "^29.5.11",
+    "@types/supertest": "^6.0.2",
+    "express": "^4.18.2",
+    "jest": "^29.7.0",
+    "supertest": "^6.3.3",
+    "ts-jest": "^29.1.1"
   },
   "scripts": {
     "dev": "yarn nodemon --inspect dist/index.js",
-    "watch": "tsc -w"
+    "watch": "tsc -w",
+    "jest": "jest -i"
   },
   "devDependencies": {
     "@types/express": "^4.17.21",
     "@types/node": "^20.10.6",
+    "dotenv": "^16.3.1",
     "nodemon": "^3.0.2",
-    "ts-node": "^10.9.2",
     "prettier": "^3.1.1",
+    "ts-node": "^10.9.2",
     "typescript": "^5.3.3"
   }
 }

@@ -1,8 +1,20 @@
 import { videos } from "../settings";
-import { Video } from "../types/videos";
+import { CreateVideoType, ErrorType, Video } from "../types/videos";
+import { validateVideoInput } from "./validationService";
 
 export const findAllVideos = (): Video[] => {
   return videos;
+};
+
+export const deleteVideoById = (id: number): boolean => {
+  const index = videos.findIndex((v) => v.id === id);
+
+  if (index !== -1) {
+    videos.splice(index, 1);
+    return true;
+  }
+
+  return false;
 };
 
 export const findVideoById = (id: number): Video | undefined => {
@@ -24,4 +36,19 @@ export const createVideo = (videoData: Video): Video => {
 
 export const deleteAllVideos = (): void => {
   videos.length = 0;
+};
+
+export const updateVideoById = (
+  id: number,
+  videoData: CreateVideoType,
+): Video | boolean => {
+  const index = videos.findIndex((v) => v.id === id);
+
+  if (index !== -1) {
+    const updatedVideo = { ...videos[index], ...videoData };
+    videos[index] = updatedVideo;
+    return updatedVideo;
+  }
+
+  return false;
 };

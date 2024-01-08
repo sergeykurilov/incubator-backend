@@ -26,6 +26,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const videoService = __importStar(require("../../services/videoService"));
 const validationService_1 = require("../../services/validationService");
+const videoService_1 = require("../../services/videoService");
 const router = (0, express_1.Router)();
 router.get("/", (req, res) => {
     const videos = videoService.findAllVideos();
@@ -51,7 +52,34 @@ router.post("/", (req, res) => {
         res.status(201).json(newVideo);
     }
 });
-router.delete("/testing/all-data", (req, res) => {
+router.put("/:id", (req, res) => {
+    var _a;
+    const id = +req.params.id;
+    const videos = videoService.findAllVideos();
+    const updateResult = (0, videoService_1.updateVideoById)(videos, id, req.body);
+    if (!updateResult.success) {
+        if ((_a = updateResult.error) === null || _a === void 0 ? void 0 : _a.errorMessages.length) {
+            res.sendStatus(404);
+        }
+        else {
+            res.status(400).json(updateResult);
+        }
+        return;
+    }
+    res.sendStatus(204);
+});
+router.delete("/:id", (req, res) => {
+    const id = +req.params.id;
+    const video = videoService.findVideoById(id);
+    if (!video) {
+        res.sendStatus(404);
+    }
+    else {
+        videoService.deleteVideoById(id);
+        res.sendStatus(204);
+    }
+});
+router.delete("/", (req, res) => {
     videoService.deleteAllVideos();
     res.sendStatus(204);
 });

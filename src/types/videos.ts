@@ -35,6 +35,6 @@ export interface ErrorMessage {
   message: string;
 }
 
-interface ErrorType {
+export interface ErrorType {
   errorMessages: ErrorMessage[];
 }
