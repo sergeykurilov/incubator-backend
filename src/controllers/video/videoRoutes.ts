@@ -36,6 +36,8 @@ router.post("/", (req: Request<{}, {}, CreateVideoType>, res: Response) => {
   }
 });
 
+const { parseISO, isValid } = require("date-fns"); // date-fns library for date validation
+
 router.put("/:id", (req, res) => {
   const id = parseInt(req.params.id);
 
@@ -54,21 +56,24 @@ router.put("/:id", (req, res) => {
     title,
     author,
     availableResolutions,
-    canBeDownloaded,
+    canBeDownloaded = false, // Default value set to false
     minAgeRestriction,
     publicationDate,
   } = req.body;
 
   const validationErrors = [];
 
+  // Title validation
   if (!title || typeof title !== "string" || title.trim().length > 40) {
     validationErrors.push({ field: "title", message: "Incorrect Title" });
   }
 
+  // Author validation
   if (!author || typeof author !== "string" || author.trim().length > 20) {
     validationErrors.push({ field: "author", message: "Incorrect Author" });
   }
 
+  // Available Resolutions validation
   if (!Array.isArray(availableResolutions)) {
     validationErrors.push({
       field: "availableResolutions",
@@ -76,6 +81,7 @@ router.put("/:id", (req, res) => {
     });
   }
 
+  // canBeDownloaded validation
   if (typeof canBeDownloaded !== "boolean") {
     validationErrors.push({
       field: "canBeDownloaded",
@@ -83,7 +89,8 @@ router.put("/:id", (req, res) => {
     });
   }
 
-  if (minAgeRestriction !== undefined) {
+  // Min Age Restriction validation
+  if (minAgeRestriction !== undefined && minAgeRestriction !== null) {
     if (
       typeof minAgeRestriction !== "number" ||
       minAgeRestriction < 1 ||
@@ -97,19 +104,23 @@ router.put("/:id", (req, res) => {
     }
   }
 
+  // Publication Date validation
   if (publicationDate !== undefined) {
-    if (isNaN(Date.parse(publicationDate))) {
+    const parsedDate = parseISO(publicationDate);
+    if (!isValid(parsedDate)) {
       validationErrors.push({
         field: "publicationDate",
-        message: "publicationDate must be a valid date",
+        message: "publicationDate must be a valid ISO 8601 date",
       });
     }
   }
 
+  // Check if any validation errors exist
   if (validationErrors.length > 0) {
     return res.status(400).json({ errorsMessages: validationErrors });
   }
 
+  // Update video logic
   const success = videoService.updateVideoById(id, req.body);
   if (success) {
     return res.sendStatus(204);
