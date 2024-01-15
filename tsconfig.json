@@ -6,6 +6,8 @@
     "strict": true,
     "noImplicitReturns": true,
     "esModuleInterop": true,
+    "strictPropertyInitialization": false,
+    "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true

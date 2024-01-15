@@ -1,5 +1,7 @@
+import { App } from "supertest/types";
+import { boot } from "../src/main";
+import "reflect-metadata";
 const request = require("supertest");
-const app = require("../src/index");
 const {
   createVideo,
   findAllVideos,
@@ -13,6 +15,13 @@ const sampleVideo = {
 };
 
 describe("Video API Routes", () => {
+  let application: App;
+
+  beforeAll(async () => {
+    const bootstrap = await boot;
+    application = bootstrap.app.app;
+  });
+
   beforeEach(() => {
     findAllVideos().length = 0;
   });
@@ -20,7 +29,7 @@ describe("Video API Routes", () => {
   it("GET /videos should return a list of videos", async () => {
     createVideo(sampleVideo);
 
-    const response = await request(app).get("/videos");
+    const response = await request(application).get("/videos");
     expect(response.status).toBe(200);
     expect(Array.isArray(response.body)).toBe(true);
     expect(response.body.length).toBe(1);
@@ -30,13 +39,15 @@ describe("Video API Routes", () => {
     const createdVideo = createVideo(sampleVideo);
     const videoId = createdVideo.id;
 
-    const response = await request(app).get(`/videos/${videoId}`);
+    const response = await request(application).get(`/videos/${videoId}`);
     expect(response.status).toBe(200);
     expect(response.body.id).toBe(videoId);
   });
 
   it("POST /videos should create a new video", async () => {
-    const response = await request(app).post("/videos").send(sampleVideo);
+    const response = await request(application)
+      .post("/videos")
+      .send(sampleVideo);
 
     expect(response.status).toBe(201);
     expect(response.body.title).toBe(sampleVideo.title);
@@ -59,7 +70,7 @@ describe("Video API Routes", () => {
       availableResolutions: ["P144"],
     };
 
-    const response = await request(app)
+    const response = await request(application)
       .put(`/videos/${videoId}`)
       .send(updatedData);
 
@@ -82,7 +93,7 @@ describe("Video API Routes", () => {
       publicationDate: 1995,
     };
 
-    const response = await request(app)
+    const response = await request(application)
       .put(`/videos/${videoId}`)
       .send(invalidData);
 
@@ -106,7 +117,7 @@ describe("Video API Routes", () => {
     const createdVideo = createVideo(sampleVideo);
     const videoId = createdVideo.id;
 
-    const response = await request(app).delete(`/videos/${videoId}`);
+    const response = await request(application).delete(`/videos/${videoId}`);
     expect(response.status).toBe(204);
 
     expect(findVideoById(videoId)).toBeUndefined();
@@ -120,7 +131,7 @@ describe("Video API Routes", () => {
       availableResolutions: ["P240"],
     });
 
-    const response = await request(app).delete("/testing/all-data");
+    const response = await request(application).delete("/testing/all-data");
     expect(response.status).toBe(204);
 
     expect(findAllVideos().length).toBe(0);

@@ -1,6 +1,6 @@
-import { AvailableResolution, Video } from "./types/videos";
+import { AvailableResolution, VideoModel } from "../../types/videos";
 
-export const videos: Video[] = [
+export const videos: VideoModel[] = [
   {
     id: 0,
     title: "title",
