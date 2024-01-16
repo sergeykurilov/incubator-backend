@@ -124,12 +124,12 @@ describe("Video API Routes", () => {
     );
 
     const invalidData = {
-      author: "valid author",
       title: null,
+      author: "valid author",
       availableResolutions: ["P144", "P240", "P720"],
       canBeDownloaded: "string",
       minAgeRestriction: 17,
-      publicationDate: "2024-01-22T14:14:16.818Z",
+      publicationDate: "2024-01-19T15:25:28.880Z",
     };
 
     const response = await request(application)
@@ -139,6 +139,10 @@ describe("Video API Routes", () => {
     expect(response.status).toBe(400);
 
     expect(response.body.errorsMessages).toEqual([
+      {
+        field: "title",
+        message: "Incorrect Title",
+      },
       {
         field: "canBeDownloaded",
         message: "canBeDownloaded must be a boolean",

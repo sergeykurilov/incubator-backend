@@ -35,7 +35,7 @@ export class VideoValidator {
     return null;
   }
 
-  static validateTitle(title: string): ErrorMessage | null {
+  static validateTitle(title?: string | null): ErrorMessage | null {
     if (
       !title ||
       typeof title !== "string" ||
@@ -44,6 +44,7 @@ export class VideoValidator {
     ) {
       return this.error("title", "Incorrect Title");
     }
+
     return null;
   }
 
@@ -141,6 +142,12 @@ export class VideoValidator {
   static validateUpdateVideo(video: Partial<VideoModel>): ErrorMessage[] {
     const errorMessages: ErrorMessage[] = [];
 
+    const titleError = this.validateTitle(video.title);
+
+    if (titleError) {
+      errorMessages.push(titleError);
+    }
+
     const publicationDateError =
       video.publicationDate &&
       this.validatePublicationDate(video.publicationDate);
@@ -155,12 +162,6 @@ export class VideoValidator {
 
     if (canBeDownloadedError) {
       errorMessages.push(canBeDownloadedError);
-    }
-
-    const titleError = video.title && this.validateTitle(video.title);
-
-    if (titleError) {
-      errorMessages.push(titleError);
     }
 
     const authorError = video.author && this.validateAuthor(video.author);
