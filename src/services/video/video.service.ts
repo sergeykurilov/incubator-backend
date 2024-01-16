@@ -21,7 +21,7 @@ export class VideoService implements IVideoService {
     videoDto: CreateVideoDto,
   ): Promise<IReturnVideoServiceType> {
     try {
-      const errors = VideoValidator.validateCreateVideo(videoDto);
+      const errors = VideoValidator.validateCreateVideoInput(videoDto);
       if (errors.length) return { errors, video: null };
 
       return { errors, video: await this.videoRepository.create(videoDto) };

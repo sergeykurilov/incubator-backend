@@ -5,6 +5,7 @@ import {
 } from "../../types/videos";
 import { isValid } from "date-fns/isValid";
 import { parseISO } from "date-fns/parseISO";
+import { CreateVideoDto } from "../../controllers/video/dto/create-video.dto";
 
 export class VideoValidator {
   static error(field: string, message: string): ErrorMessage {
@@ -77,18 +78,60 @@ export class VideoValidator {
     return null;
   }
 
-  static validateCreateVideo(video: VideoModel): ErrorMessage[] {
-    const errorMessages = [
-      this.validateCanBeDownloaded(video.canBeDownloaded),
-      this.validateTitle(video.title),
-      this.validateAuthor(video.author),
-      this.validateAvailableResolutions(video.availableResolutions),
-      this.validateMinAgeRestriction(video.minAgeRestriction),
-    ].filter((error) => error !== null) as ErrorMessage[];
+  static validateCreateVideoInput(videoDto: CreateVideoDto): ErrorMessage[] {
+    const errors: ErrorMessage[] = [];
 
-    return errorMessages;
+    if (
+      !videoDto.title ||
+      typeof videoDto.title !== "string" ||
+      videoDto.title.trim().length === 0 ||
+      videoDto.title.length > 40
+    ) {
+      errors.push({
+        field: "title",
+        message:
+          "Title is required and must be a string of at most 40 characters",
+      });
+    }
+
+    if (
+      !videoDto.author ||
+      typeof videoDto.author !== "string" ||
+      videoDto.author.trim().length === 0 ||
+      videoDto.author.length > 20
+    ) {
+      errors.push({
+        field: "author",
+        message:
+          "Author is required and must be a string of at most 20 characters",
+      });
+    }
+
+    if (
+      !Array.isArray(videoDto.availableResolutions) ||
+      videoDto.availableResolutions.length === 0 ||
+      !videoDto.availableResolutions.every((resolution: AvailableResolution) =>
+        [
+          AvailableResolution.P144,
+          AvailableResolution.P240,
+          AvailableResolution.P360,
+          AvailableResolution.P480,
+          AvailableResolution.P720,
+          AvailableResolution.P1080,
+          AvailableResolution.P1440,
+          AvailableResolution.P2160,
+        ].includes(resolution),
+      )
+    ) {
+      errors.push({
+        field: "availableResolutions",
+        message:
+          "At least one valid resolution (P144, P240, P360, P480, P720, P1080, P1440, P2160) should be added",
+      });
+    }
+
+    return errors;
   }
-
   static validateUpdateVideo(video: Partial<VideoModel>): ErrorMessage[] {
     const errorMessages: ErrorMessage[] = [];
 

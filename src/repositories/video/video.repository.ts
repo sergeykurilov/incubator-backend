@@ -13,9 +13,9 @@ export class VideoRepository implements IVideoRepository {
         videos.length > 0 ? Math.max(...videos.map((v) => v.id)) + 1 : 1;
 
       const newVideo = {
-        ...video,
         id: newId,
-        canBeDownloaded: false,
+        ...video,
+        canBeDownloaded: true,
         minAgeRestriction: null,
         createdAt: new Date().toISOString(),
       };
