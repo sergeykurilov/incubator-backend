@@ -11,7 +11,14 @@ export class VideoRepository implements IVideoRepository {
     return new Promise((resolve) => {
       const newId =
         videos.length > 0 ? Math.max(...videos.map((v) => v.id)) + 1 : 1;
-      const newVideo = { ...video, id: newId };
+
+      const newVideo = {
+        ...video,
+        id: newId,
+        canBeDownloaded: false,
+        minAgeRestriction: null,
+      };
+
       videos.push(<VideoModel>newVideo);
       resolve(<VideoModel>newVideo);
     });

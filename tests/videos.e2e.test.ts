@@ -54,6 +54,8 @@ describe("Video API Routes", () => {
       .post("/videos")
       .send(sampleVideo);
 
+    console.log(response.body);
+
     expect(response.status).toBe(201);
     expect(response.body.title).toBe(sampleVideo.title);
 

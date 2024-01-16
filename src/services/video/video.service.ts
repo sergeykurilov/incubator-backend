@@ -1,9 +1,9 @@
 import { inject, injectable } from "inversify";
 import {
-  IUpdateVideoServiceType,
+  IReturnVideoServiceType,
   IVideoService,
 } from "./video.service.interface";
-import { ErrorMessage, VideoModel } from "../../types/videos";
+import { VideoModel } from "../../types/videos";
 import { CreateVideoDto } from "../../controllers/video/dto/create-video.dto";
 import { UpdateVideoType } from "../../controllers/video/dto/update-video.dto";
 import { IVideoRepository } from "../../repositories/video/video.repository.interface";
@@ -19,15 +19,12 @@ export class VideoService implements IVideoService {
 
   async createVideo(
     videoDto: CreateVideoDto,
-  ): Promise<VideoModel | ErrorMessage[]> {
+  ): Promise<IReturnVideoServiceType> {
     try {
       const errors = VideoValidator.validateCreateVideo(videoDto);
+      if (errors.length) return { errors, video: null };
 
-      if (errors.length) {
-        return errors;
-      }
-
-      return await this.videoRepository.create(videoDto);
+      return { errors, video: await this.videoRepository.create(videoDto) };
     } catch (error) {
       throw new Error(`Error while creating video`);
     }
@@ -68,15 +65,15 @@ export class VideoService implements IVideoService {
   async updateVideo(
     id: number,
     updatedVideo: UpdateVideoType,
-  ): Promise<IUpdateVideoServiceType> {
+  ): Promise<IReturnVideoServiceType> {
     try {
       const errors = VideoValidator.validateUpdateVideo(updatedVideo);
-
       if (errors.length) return { errors, video: null };
 
-      const video = await this.videoRepository.update(id, updatedVideo);
-
-      return { errors, video };
+      return {
+        errors,
+        video: await this.videoRepository.update(id, updatedVideo),
+      };
     } catch (error) {
       throw new Error(`Error while updating video`);
     }

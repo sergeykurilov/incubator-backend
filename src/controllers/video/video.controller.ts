@@ -97,13 +97,22 @@ export class VideoController
 
   async create(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const videoCreationResult = await this.videoService.createVideo(req.body);
+      const { video: createdVideo, errors } =
+        await this.videoService.createVideo(req.body);
 
-      if (Array.isArray(videoCreationResult)) {
-        res.status(400).json({ errors: videoCreationResult });
+      const errorMessage: ErrorType = {
+        errorsMessages: errors,
+      };
+
+      if (errors.length) {
+        res.status(400).json(errorMessage);
       }
 
-      res.status(201).json(videoCreationResult);
+      if (!createdVideo) {
+        res.status(404).send("Video not found");
+      }
+
+      res.status(201).json(createdVideo);
     } catch (error) {
       this.loggerService.error("Error while creating video", error);
       next(error);
