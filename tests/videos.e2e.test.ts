@@ -1,11 +1,10 @@
 import { App } from "supertest/types";
 import { boot } from "../src/main";
-import "reflect-metadata";
-import request from "supertest";
 import { VideoRepository } from "../src/repositories/video/video.repository";
 import { AvailableResolution, VideoModel } from "../src/types/videos";
 import { IVideoRepository } from "../src/repositories/video/video.repository.interface";
 import { SERVICE_IDENTIFIER } from "../common/consts/service-identifiers";
+const request = require("supertest");
 
 const sampleVideo = {
   title: "Sample Video",
