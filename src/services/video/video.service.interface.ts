@@ -5,6 +5,7 @@ import { UpdateVideoType } from "../../controllers/video/dto/update-video.dto";
 export type IReturnVideoServiceType = {
   errors: ErrorMessage[];
   video: VideoModel | null;
+  isVideo?: boolean;
 };
 
 export interface IVideoService {

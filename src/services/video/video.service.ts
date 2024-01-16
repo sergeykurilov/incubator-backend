@@ -22,9 +22,16 @@ export class VideoService implements IVideoService {
   ): Promise<IReturnVideoServiceType> {
     try {
       const errors = VideoValidator.validateCreateVideoInput(videoDto);
-      if (errors.length) return { errors, video: null };
+      if (errors.length)
+        return {
+          errors,
+          video: null,
+        };
 
-      return { errors, video: await this.videoRepository.create(videoDto) };
+      return {
+        errors,
+        video: await this.videoRepository.create(videoDto),
+      };
     } catch (error) {
       throw new Error(`Error while creating video`);
     }
@@ -64,12 +71,18 @@ export class VideoService implements IVideoService {
   ): Promise<IReturnVideoServiceType> {
     try {
       const errors = VideoValidator.validateUpdateVideo(updatedVideo);
-      console.log(errors);
-      if (errors.length) return { errors, video: null };
+
+      if (errors.length)
+        return {
+          errors,
+          video: null,
+          isVideo: Boolean(await this.videoRepository.findById(id)),
+        };
 
       return {
         errors,
         video: await this.videoRepository.update(id, updatedVideo),
+        isVideo: Boolean(await this.videoRepository.findById(id)),
       };
     } catch (error) {
       throw new Error(`Error while updating video`);

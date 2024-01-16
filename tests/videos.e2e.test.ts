@@ -90,7 +90,7 @@ describe("Video API Routes", () => {
       },
       {
         field: "author",
-        message: "Incorrect Author",
+        message: "Incorrect author",
       },
     ]);
 
@@ -113,9 +113,9 @@ describe("Video API Routes", () => {
       `/videos/${nonExistentVideoId}`,
     );
 
-    expect(putResponse.status).toBe(404);
     expect(deleteResponse.status).toBe(404);
     expect(getResponse.status).toBe(404);
+    expect(putResponse.status).toBe(404);
   });
 
   it("PUT /videos should return error for incorrect input data", async () => {
@@ -141,7 +141,7 @@ describe("Video API Routes", () => {
     expect(response.body.errorsMessages).toEqual([
       {
         field: "title",
-        message: "Incorrect Title",
+        message: "Incorrect title",
       },
       {
         field: "canBeDownloaded",
@@ -299,7 +299,7 @@ describe("Video API Routes", () => {
       },
       {
         field: "author",
-        message: "Incorrect Author",
+        message: "Incorrect author",
       },
     ]);
 

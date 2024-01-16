@@ -111,10 +111,6 @@ export class VideoController
         res.status(400).json(errorMessage);
       }
 
-      if (!createdVideo) {
-        res.status(404).send("Video not found");
-      }
-
       res.status(201).json(createdVideo);
     } catch (error) {
       this.loggerService.error("Error while creating video", error);
@@ -124,8 +120,7 @@ export class VideoController
 
   async delete(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const success = await this.videoService.deleteAll();
-
+      await this.videoService.deleteAll();
       res.status(204).send();
     } catch (error) {
       this.loggerService.error("Error while deleting video", error);
@@ -136,19 +131,22 @@ export class VideoController
   async update(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const id = parseInt(req.params.id);
-      const { errors, video: updatedVideo } =
-        await this.videoService.updateVideo(id, req.body);
+      const {
+        errors,
+        video: updatedVideo,
+        isVideo,
+      } = await this.videoService.updateVideo(id, req.body);
 
       const errorMessage: ErrorType = {
         errorsMessages: errors,
       };
 
-      if (errors.length) {
-        res.status(400).json(errorMessage);
+      if (!isVideo) {
+        res.status(404).send("Video not found");
       }
 
-      if (!updatedVideo) {
-        res.status(404).send("Video not found");
+      if (errors.length) {
+        res.status(400).json(errorMessage);
       }
 
       res.status(204).json(updatedVideo);
