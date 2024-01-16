@@ -140,11 +140,6 @@ describe("Video API Routes", () => {
 
     expect(response.body.errorsMessages).toEqual([
       {
-        field: "title",
-        message:
-          "Title is required and must be a string of at most 40 characters",
-      },
-      {
         field: "canBeDownloaded",
         message: "canBeDownloaded must be a boolean",
       },

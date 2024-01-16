@@ -36,8 +36,12 @@ export class VideoValidator {
   }
 
   static validateTitle(title: string): ErrorMessage | null {
-    console.log(title);
-    if (!title || typeof title !== "string" || title.trim().length > 40) {
+    if (
+      !title ||
+      typeof title !== "string" ||
+      title.trim().length === 0 ||
+      title.length > 40
+    ) {
       return this.error("title", "Incorrect Title");
     }
     return null;
@@ -73,7 +77,7 @@ export class VideoValidator {
   }
 
   static validateMinAgeRestriction(age: number | null): ErrorMessage | null {
-    if (age !== undefined && (typeof age !== "number" || age < 0)) {
+    if (age !== null && (typeof age !== "number" || age < 1 || age > 18)) {
       return this.error("minAgeRestriction", "Invalid minAgeRestriction");
     }
 
@@ -143,19 +147,6 @@ export class VideoValidator {
 
     if (publicationDateError) {
       errorMessages.push(publicationDateError);
-    }
-
-    if (
-      !video.title ||
-      typeof video.title !== "string" ||
-      video.title.trim().length === 0 ||
-      video.title.length > 40
-    ) {
-      errorMessages.push({
-        field: "title",
-        message:
-          "Title is required and must be a string of at most 40 characters",
-      });
     }
 
     const canBeDownloadedError =
