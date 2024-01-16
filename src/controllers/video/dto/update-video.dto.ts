@@ -1,4 +1,4 @@
-import { AvailableResolution } from '../../../types/videos';
+import { AvailableResolution } from "../../../types/videos";
 
 export interface UpdateVideoType {
   title: string;

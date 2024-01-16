@@ -1,52 +1,53 @@
-import { NextFunction, Request, Response } from 'express';
-import { BaseController } from '../../../common/controllers/base.controller';
-import { IVideoController } from './video.controller.interface';
-import { inject } from 'inversify';
-import { SERVICE_IDENTIFIER } from '../../../common/consts/service-identifiers';
-import { VideoService } from '../../services/video/video.service';
-import { LoggerService } from '../../../common/logger/logger.service';
-import 'reflect-metadata';
-import { HTTPMethods } from '../../../common/interfaces/route.interface';
-import { ErrorType } from '../../types/videos';
+import { type NextFunction, type Request, type Response } from "express";
+import { BaseController } from "../../../common/controllers/base.controller";
+import { type IVideoController } from "./video.controller.interface";
+import { SERVICE_IDENTIFIER } from "../../../common/consts/service-identifiers";
+import { HTTPMethods } from "../../../common/interfaces/route.interface";
+import "reflect-metadata";
+import { VideoService } from "../../services/video/video.service";
+import { LoggerService } from "../../../common/logger/logger.service";
+import { inject } from "inversify";
+import { type ErrorType } from "../../types/videos";
 
 export class VideoController
   extends BaseController
   implements IVideoController
 {
   constructor(
-    @inject(SERVICE_IDENTIFIER.VideoService) private videoService: VideoService,
+    @inject(SERVICE_IDENTIFIER.VideoService)
+    private readonly videoService: VideoService,
     @inject(SERVICE_IDENTIFIER.ILogger)
-    private loggerService: LoggerService<{}>
+    private readonly loggerService: LoggerService<{}>,
   ) {
     super(loggerService);
     this.bindRoutes([
       {
-        path: '/',
+        path: "/",
         method: HTTPMethods.GET,
         func: this.getAll,
       },
       {
-        path: '/:id',
+        path: "/:id",
         method: HTTPMethods.GET,
         func: this.getById,
       },
       {
-        path: '/',
+        path: "/",
         method: HTTPMethods.POST,
         func: this.create,
       },
       {
-        path: '/:id',
+        path: "/:id",
         method: HTTPMethods.PUT,
         func: this.update,
       },
       {
-        path: '/:id',
+        path: "/:id",
         method: HTTPMethods.DELETE,
         func: this.deleteById,
       },
       {
-        path: '/',
+        path: "/",
         method: HTTPMethods.DELETE,
         func: this.delete,
       },
@@ -58,7 +59,7 @@ export class VideoController
       const videos = await this.videoService.findAll();
       res.json(videos);
     } catch (error) {
-      this.loggerService.error('Error getting all videos', error);
+      this.loggerService.error("Error getting all videos", error);
       next(error);
     }
   }
@@ -66,13 +67,13 @@ export class VideoController
   async deleteAll(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       await this.videoService.deleteAll();
       res.status(201);
     } catch (error) {
-      this.loggerService.error('Error getting all videos', error);
+      this.loggerService.error("Error getting all videos", error);
       next(error);
     }
   }
@@ -107,13 +108,13 @@ export class VideoController
         errorsMessages: errors,
       };
 
-      if (errors.length) {
+      if (errors.length > 0) {
         res.status(400).json(errorMessage);
       }
 
       res.status(201).json(createdVideo);
     } catch (error) {
-      this.loggerService.error('Error while creating video', error);
+      this.loggerService.error("Error while creating video", error);
       next(error);
     }
   }
@@ -123,7 +124,7 @@ export class VideoController
       await this.videoService.deleteAll();
       res.status(204).send();
     } catch (error) {
-      this.loggerService.error('Error while deleting video', error);
+      this.loggerService.error("Error while deleting video", error);
       next(error);
     }
   }
@@ -142,16 +143,16 @@ export class VideoController
       };
 
       if (!isVideo) {
-        res.status(404).send('Video not found');
+        res.status(404).send("Video not found");
       }
 
-      if (errors.length) {
+      if (errors.length > 0) {
         res.status(400).json(errorMessage);
       }
 
       res.status(204).json(updatedVideo);
     } catch (error) {
-      this.loggerService.error('Error while updating video', error);
+      this.loggerService.error("Error while updating video", error);
       next(error);
     }
   }

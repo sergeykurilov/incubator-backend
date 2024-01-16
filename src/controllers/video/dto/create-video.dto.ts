@@ -1,4 +1,4 @@
-import { AvailableResolution, VideoModel } from '../../../types/videos';
+import { AvailableResolution, VideoModel } from "../../../types/videos";
 
 export interface CreateVideoDto extends VideoModel {
   id: number;

@@ -1,24 +1,24 @@
-import { inject, injectable } from 'inversify';
+import { inject, injectable } from "inversify";
 import {
   IReturnVideoServiceType,
   IVideoService,
-} from './video.service.interface';
-import { VideoModel } from '../../types/videos';
-import { CreateVideoDto } from '../../controllers/video/dto/create-video.dto';
-import { UpdateVideoType } from '../../controllers/video/dto/update-video.dto';
-import { IVideoRepository } from '../../repositories/video/video.repository.interface';
-import { SERVICE_IDENTIFIER } from '../../../common/consts/service-identifiers';
-import { VideoValidator } from './video.validation';
+} from "./video.service.interface";
+import { VideoModel } from "../../types/videos";
+import { CreateVideoDto } from "../../controllers/video/dto/create-video.dto";
+import { UpdateVideoType } from "../../controllers/video/dto/update-video.dto";
+import { IVideoRepository } from "../../repositories/video/video.repository.interface";
+import { SERVICE_IDENTIFIER } from "../../../common/consts/service-identifiers";
+import { VideoValidator } from "./video.validation";
 
 @injectable()
 export class VideoService implements IVideoService {
   constructor(
     @inject(SERVICE_IDENTIFIER.VideoRepository)
-    private videoRepository: IVideoRepository
+    private videoRepository: IVideoRepository,
   ) {}
 
   async createVideo(
-    videoDto: CreateVideoDto
+    videoDto: CreateVideoDto,
   ): Promise<IReturnVideoServiceType> {
     try {
       const errors = VideoValidator.validateCreateVideoInput(videoDto);
@@ -69,7 +69,7 @@ export class VideoService implements IVideoService {
 
   async updateVideo(
     id: number,
-    updatedVideo: UpdateVideoType
+    updatedVideo: UpdateVideoType,
   ): Promise<IReturnVideoServiceType> {
     try {
       const errors = VideoValidator.validateUpdateVideo(updatedVideo);

@@ -1,13 +1,13 @@
-import express, { Express } from 'express';
-import { Server } from 'http';
+import express, { Express } from "express";
+import { Server } from "http";
 
-import { inject, injectable } from 'inversify';
-import { ILogger } from '../common/logger/logger.interface';
-import { SERVICE_IDENTIFIER } from '../common/consts/service-identifiers';
-import { IExceptionFilter } from '../common/exceptions/exception.filter.interface';
-import { IVideoService } from './services/video/video.service.interface';
-import { IVideoController } from './controllers/video/video.controller.interface';
-import 'reflect-metadata';
+import { inject, injectable } from "inversify";
+import { ILogger } from "../common/logger/logger.interface";
+import { SERVICE_IDENTIFIER } from "../common/consts/service-identifiers";
+import { IExceptionFilter } from "../common/exceptions/exception.filter.interface";
+import { IVideoService } from "./services/video/video.service.interface";
+import { IVideoController } from "./controllers/video/video.controller.interface";
+import "reflect-metadata";
 
 @injectable()
 export class App {
@@ -22,7 +22,7 @@ export class App {
     @inject(SERVICE_IDENTIFIER.VideoService)
     private videoService: IVideoService,
     @inject(SERVICE_IDENTIFIER.ExceptionFilter)
-    private exceptionFilter: IExceptionFilter
+    private exceptionFilter: IExceptionFilter,
   ) {
     this.app = express();
     this.port = 8000;
@@ -33,8 +33,8 @@ export class App {
   }
 
   useRoutes(): void {
-    this.app.use('/videos', this.videoController.router);
-    this.app.delete('/testing/all-data', async (req, res, next) => {
+    this.app.use("/videos", this.videoController.router);
+    this.app.delete("/testing/all-data", async (req, res, next) => {
       try {
         await this.videoService.deleteAll();
         res.sendStatus(204);

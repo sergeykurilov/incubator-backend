@@ -1,6 +1,6 @@
-import { ErrorMessage, VideoModel } from '../../types/videos';
-import { CreateVideoDto } from '../../controllers/video/dto/create-video.dto';
-import { UpdateVideoType } from '../../controllers/video/dto/update-video.dto';
+import { ErrorMessage, VideoModel } from "../../types/videos";
+import { CreateVideoDto } from "../../controllers/video/dto/create-video.dto";
+import { UpdateVideoType } from "../../controllers/video/dto/update-video.dto";
 
 export type IReturnVideoServiceType = {
   errors: ErrorMessage[];
@@ -11,7 +11,7 @@ export type IReturnVideoServiceType = {
 export interface IVideoService {
   updateVideo: (
     id: number,
-    updatedVideo: UpdateVideoType
+    updatedVideo: UpdateVideoType,
   ) => Promise<IReturnVideoServiceType>;
   createVideo: (video: CreateVideoDto) => Promise<IReturnVideoServiceType>;
   findAll: () => Promise<VideoModel[]>;
