@@ -59,6 +59,65 @@ describe("Video API Routes", () => {
     expect(unchangedVideo?.title).toBe(sampleVideo.title);
   });
 
+  it("PUT /videos/:id should return error messages for invalid data", async () => {
+    const createdVideo = await videoRepository.create(
+      sampleVideo as VideoModel,
+    );
+
+    const invalidData = {
+      author: "length_21-weqweqweqwq",
+      title: "valid title",
+      availableResolutions: ["P240", "P720"],
+      canBeDownloaded: "string",
+      minAgeRestriction: 15,
+      publicationDate: "1995",
+    };
+
+    const response = await request(application)
+      .put(`/videos/${createdVideo.id}`)
+      .send(invalidData);
+
+    expect(response.status).toBe(400);
+
+    expect(response.body.errorsMessages).toEqual([
+      {
+        field: "publicationDate",
+        message: "publicationDate must be a valid ISO 8601 date",
+      },
+      {
+        field: "canBeDownloaded",
+        message: "canBeDownloaded must be a boolean",
+      },
+      {
+        field: "author",
+        message: "Incorrect Author",
+      },
+    ]);
+
+    const unchangedVideo = await videoRepository.findById(createdVideo.id);
+    expect(unchangedVideo?.title).toBe(sampleVideo.title);
+  });
+
+  it("PUT, DELETE, GET /videos/:id should return a 404 status when the video ID is not found", async () => {
+    const nonExistentVideoId = 9999;
+
+    const putResponse = await request(application)
+      .put(`/videos/${nonExistentVideoId}`)
+      .send({ title: "Updated Title" });
+
+    const deleteResponse = await request(application).delete(
+      `/videos/${nonExistentVideoId}`,
+    );
+
+    const getResponse = await request(application).get(
+      `/videos/${nonExistentVideoId}`,
+    );
+
+    expect(putResponse.status).toBe(404);
+    expect(deleteResponse.status).toBe(404);
+    expect(getResponse.status).toBe(404);
+  });
+
   it("PUT /videos should return error for incorrect input data", async () => {
     const createdVideo = await videoRepository.create(
       sampleVideo as VideoModel,
@@ -123,45 +182,6 @@ describe("Video API Routes", () => {
     );
     expect(response.status).toBe(200);
     expect(response.body.id).toBe(createdVideo.id);
-  });
-
-  it("PUT /videos/:id should return error messages for invalid data", async () => {
-    const createdVideo = await videoRepository.create(
-      sampleVideo as VideoModel,
-    );
-
-    const invalidData = {
-      author: "length_21-weqweqweqwq",
-      title: "valid title",
-      availableResolutions: ["P240", "P720"],
-      canBeDownloaded: "string",
-      minAgeRestriction: 15,
-      publicationDate: "1995",
-    };
-
-    const response = await request(application)
-      .put(`/videos/${createdVideo.id}`)
-      .send(invalidData);
-
-    expect(response.status).toBe(400);
-
-    expect(response.body.errorsMessages).toEqual([
-      {
-        field: "publicationDate",
-        message: "publicationDate must be a valid ISO 8601 date",
-      },
-      {
-        field: "canBeDownloaded",
-        message: "canBeDownloaded must be a boolean",
-      },
-      {
-        field: "author",
-        message: "Incorrect Author",
-      },
-    ]);
-
-    const unchangedVideo = await videoRepository.findById(createdVideo.id);
-    expect(unchangedVideo?.title).toBe(sampleVideo.title);
   });
 
   it("DELETE /videos/:id should return a 404 error with invalid video ID", async () => {

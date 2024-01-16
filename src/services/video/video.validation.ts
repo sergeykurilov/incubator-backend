@@ -6,6 +6,7 @@ import {
 import { isValid } from "date-fns/isValid";
 import { parseISO } from "date-fns/parseISO";
 import { CreateVideoDto } from "../../controllers/video/dto/create-video.dto";
+import { isDate } from "date-fns";
 
 export class VideoValidator {
   static error(field: string, message: string): ErrorMessage {
@@ -13,7 +14,7 @@ export class VideoValidator {
   }
 
   static validatePublicationDate(date: string | null): ErrorMessage | null {
-    if (!date || !isValid(parseISO(date))) {
+    if (!isDate(date) || !isValid(parseISO(date))) {
       return this.error(
         "publicationDate",
         "publicationDate must be a valid ISO 8601 date",
@@ -33,6 +34,7 @@ export class VideoValidator {
   }
 
   static validateTitle(title: string): ErrorMessage | null {
+    console.log(title);
     if (!title || typeof title !== "string" || title.trim().length > 40) {
       return this.error("title", "Incorrect Title");
     }
@@ -141,6 +143,19 @@ export class VideoValidator {
       errorMessages.push(publicationDateError);
     }
 
+    if (
+      !video.title ||
+      typeof video.title !== "string" ||
+      video.title.trim().length === 0 ||
+      video.title.length > 40
+    ) {
+      errorMessages.push({
+        field: "title",
+        message:
+          "Title is required and must be a string of at most 40 characters",
+      });
+    }
+
     const canBeDownloadedError =
       video.canBeDownloaded &&
       this.validateCanBeDownloaded(video.canBeDownloaded);
@@ -177,7 +192,6 @@ export class VideoValidator {
       errorMessages.push(minAgeRestrictionError);
     }
 
-    console.log(errorMessages);
     return errorMessages.filter((error) => error !== null) as ErrorMessage[];
   }
 }

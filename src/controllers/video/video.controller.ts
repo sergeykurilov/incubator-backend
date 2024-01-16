@@ -69,7 +69,7 @@ export class VideoController
     next: NextFunction,
   ): Promise<void> {
     try {
-      const videos = await this.videoService.deleteAll();
+      await this.videoService.deleteAll();
       res.status(201);
     } catch (error) {
       this.loggerService.error("Error getting all videos", error);
@@ -80,7 +80,10 @@ export class VideoController
   async getById({ params: { id } }: Request, res: Response): Promise<void> {
     const video = await this.videoService.findById(+id);
 
-    if (!video) res.status(404);
+    if (!video?.id) {
+      res.status(404).send();
+      return;
+    }
 
     res.status(200).json(video);
   }
