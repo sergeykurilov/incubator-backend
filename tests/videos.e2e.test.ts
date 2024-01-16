@@ -115,7 +115,7 @@ describe("Video API Routes", () => {
     expect(response.body.every((video: VideoModel) => video.createdAt)).toBe(
       true,
     );
-
+    console.log(response.body);
     expect(
       response.body.every((video: VideoModel) => video.publicationDate),
     ).toBe(true);

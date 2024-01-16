@@ -4,6 +4,7 @@ import { videos } from "./db";
 import "reflect-metadata";
 import { UpdateVideoType } from "../../controllers/video/dto/update-video.dto";
 import { injectable } from "inversify";
+import { addDays } from "date-fns/addDays";
 
 @injectable()
 export class VideoRepository implements IVideoRepository {
@@ -18,7 +19,7 @@ export class VideoRepository implements IVideoRepository {
         canBeDownloaded: true,
         minAgeRestriction: null,
         createdAt: new Date().toISOString(),
-        publicationDate: new Date().toISOString(),
+        publicationDate: addDays(new Date(), 1).toISOString(),
       };
 
       videos.push(<VideoModel>newVideo);
