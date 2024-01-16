@@ -129,6 +129,7 @@ describe("Video API Routes", () => {
       availableResolutions: ["P144", "P240", "P720"],
       canBeDownloaded: "string",
       minAgeRestriction: 17,
+      publicationDate: "2024-01-22T14:14:16.818Z",
     };
 
     const response = await request(application)
