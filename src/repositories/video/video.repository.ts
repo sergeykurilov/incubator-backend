@@ -17,6 +17,7 @@ export class VideoRepository implements IVideoRepository {
         id: newId,
         canBeDownloaded: false,
         minAgeRestriction: null,
+        createdAt: new Date().toISOString(),
       };
 
       videos.push(<VideoModel>newVideo);
