@@ -16,7 +16,7 @@ export class VideoRepository implements IVideoRepository {
       const newVideo = {
         id: newId,
         ...video,
-        canBeDownloaded: true,
+        canBeDownloaded: false,
         minAgeRestriction: null,
         createdAt: new Date().toISOString(),
         publicationDate: addDays(new Date(), 1).toISOString(),
