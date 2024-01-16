@@ -5,7 +5,6 @@ import {
 } from "../../types/videos";
 import { isValid } from "date-fns/isValid";
 import { parseISO } from "date-fns/parseISO";
-import { isDate } from "date-fns/isDate";
 import { CreateVideoDto } from "../../controllers/video/dto/create-video.dto";
 
 export class VideoValidator {
@@ -14,7 +13,7 @@ export class VideoValidator {
   }
 
   static validatePublicationDate(date: string | null): ErrorMessage | null {
-    if (!isDate(date) || !isValid(parseISO(date))) {
+    if (!date || !isValid(parseISO(date))) {
       return this.error(
         "publicationDate",
         "publicationDate must be a valid ISO 8601 date",
