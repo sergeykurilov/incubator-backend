@@ -1,12 +1,11 @@
 import { App } from "supertest/types";
 import { boot } from "../src/main";
 import "reflect-metadata";
-const request = require("supertest");
-const {
-  createVideo,
-  findAllVideos,
-  findVideoById,
-} = require("../src/services/videoService");
+import request from "supertest";
+import { VideoRepository } from "../src/repositories/video/video.repository";
+import { AvailableResolution, VideoModel } from "../src/types/videos";
+import { IVideoRepository } from "../src/repositories/video/video.repository.interface";
+import { SERVICE_IDENTIFIER } from "../common/consts/service-identifiers";
 
 const sampleVideo = {
   title: "Sample Video",
@@ -16,18 +15,22 @@ const sampleVideo = {
 
 describe("Video API Routes", () => {
   let application: App;
+  let videoRepository: VideoRepository;
 
   beforeAll(async () => {
     const bootstrap = await boot;
     application = bootstrap.app.app;
+    videoRepository = bootstrap.appContainer.get<IVideoRepository>(
+      SERVICE_IDENTIFIER.VideoRepository,
+    );
   });
 
-  beforeEach(() => {
-    findAllVideos().length = 0;
+  beforeEach(async () => {
+    await videoRepository.deleteAll();
   });
 
   it("GET /videos should return a list of videos", async () => {
-    createVideo(sampleVideo);
+    await videoRepository.create(sampleVideo as VideoModel);
 
     const response = await request(application).get("/videos");
     expect(response.status).toBe(200);
@@ -35,13 +38,16 @@ describe("Video API Routes", () => {
     expect(response.body.length).toBe(1);
   });
 
-  it("GET /api/videos/:id should return a single video by ID", async () => {
-    const createdVideo = createVideo(sampleVideo);
-    const videoId = createdVideo.id;
+  it("GET /videos/:id should return a single video by ID", async () => {
+    const createdVideo = await videoRepository.create(
+      sampleVideo as VideoModel,
+    );
 
-    const response = await request(application).get(`/videos/${videoId}`);
+    const response = await request(application).get(
+      `/videos/${createdVideo.id}`,
+    );
     expect(response.status).toBe(200);
-    expect(response.body.id).toBe(videoId);
+    expect(response.body.id).toBe(createdVideo.id);
   });
 
   it("POST /videos should create a new video", async () => {
@@ -52,37 +58,55 @@ describe("Video API Routes", () => {
     expect(response.status).toBe(201);
     expect(response.body.title).toBe(sampleVideo.title);
 
-    expect(findVideoById(response.body.id)).toBeTruthy();
+    const createdVideo = await videoRepository.findById(response.body.id);
+    expect(createdVideo).toBeTruthy();
   });
 
   it("PUT /videos/:id should update an existing video with valid data", async () => {
-    const createdVideo = createVideo(sampleVideo);
-    const videoId = createdVideo.id;
+    const createdVideo = await videoRepository.create(
+      sampleVideo as VideoModel,
+    );
 
     const updatedData = {
-      id: videoId,
-      title: "Updated Title", // Update the title to valid data
-      author: "Updated Author", // Update the author to valid data
+      title: "Updated Title",
+      author: "Updated Author",
       canBeDownloaded: true,
-      minAgeRestriction: 18, // Update minAgeRestriction to valid data
-      createdAt: "2024-01-02T15:40:19.154Z",
-      publicationDate: "2024-01-02T15:40:19.154Z",
+      minAgeRestriction: 18,
       availableResolutions: ["P144"],
     };
 
     const response = await request(application)
-      .put(`/videos/${videoId}`)
+      .put(`/videos/${createdVideo.id}`)
       .send(updatedData);
 
     expect(response.status).toBe(204);
 
-    const updatedVideo = findVideoById(videoId);
-    expect(updatedVideo.title).toBe(updatedData.title);
+    const updatedVideo = await videoRepository.findById(createdVideo.id);
+    expect(updatedVideo?.title).toBe(updatedData.title);
+  });
+
+  it("PUT /videos/:id should return a 404 error with invalid video ID", async () => {
+    const invalidVideoId = 999;
+
+    const updatedData = {
+      title: "Updated Title",
+      author: "Updated Author",
+      canBeDownloaded: true,
+      minAgeRestriction: 18,
+      availableResolutions: ["P144"],
+    };
+
+    const response = await request(application)
+      .put(`/videos/${invalidVideoId}`)
+      .send(updatedData);
+
+    expect(response.status).toBe(404);
   });
 
   it("PUT /videos/:id should return a 400 error with invalid data", async () => {
-    const createdVideo = createVideo(sampleVideo);
-    const videoId = createdVideo.id;
+    const createdVideo = await videoRepository.create(
+      sampleVideo as VideoModel,
+    );
 
     const invalidData = {
       author: "length_21-weqweqweqwq",
@@ -94,10 +118,11 @@ describe("Video API Routes", () => {
     };
 
     const response = await request(application)
-      .put(`/videos/${videoId}`)
+      .put(`/videos/${createdVideo.id}`)
       .send(invalidData);
 
     expect(response.status).toBe(400);
+    console.log(response.body);
     expect(response.body.errorsMessages).toEqual([
       {
         field: "author",
@@ -109,31 +134,36 @@ describe("Video API Routes", () => {
       },
     ]);
 
-    const unchangedVideo = findVideoById(videoId);
-    expect(unchangedVideo.title).toBe(sampleVideo.title);
+    const unchangedVideo = await videoRepository.findById(createdVideo.id);
+    expect(unchangedVideo?.title).toBe(sampleVideo.title);
   });
 
-  it("DELETE /api/videos/:id should delete an existing video", async () => {
-    const createdVideo = createVideo(sampleVideo);
-    const videoId = createdVideo.id;
+  it("DELETE /videos/:id should delete an existing video", async () => {
+    const createdVideo = await videoRepository.create(
+      sampleVideo as VideoModel,
+    );
 
-    const response = await request(application).delete(`/videos/${videoId}`);
+    const response = await request(application).delete(
+      `/videos/${createdVideo.id}`,
+    );
     expect(response.status).toBe(204);
 
-    expect(findVideoById(videoId)).toBeUndefined();
+    const deletedVideo = await videoRepository.findById(createdVideo.id);
+    expect(deletedVideo).toBeNull();
   });
 
   it("DELETE /videos should delete all videos", async () => {
-    createVideo(sampleVideo);
-    createVideo({
+    await videoRepository.create(sampleVideo as VideoModel);
+    await videoRepository.create({
       title: "Another Video",
       author: "Another Author",
-      availableResolutions: ["P240"],
-    });
+      availableResolutions: [AvailableResolution.P240],
+    } as VideoModel);
 
-    const response = await request(application).delete("/testing/all-data");
+    const response = await request(application).delete("/videos");
     expect(response.status).toBe(204);
 
-    expect(findAllVideos().length).toBe(0);
+    const allVideos = await videoRepository.findAll();
+    expect(allVideos.length).toBe(0);
   });
 });

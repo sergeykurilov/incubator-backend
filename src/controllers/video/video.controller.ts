@@ -7,6 +7,7 @@ import { VideoService } from "../../services/video/video.service";
 import { LoggerService } from "../../../common/logger/logger.service";
 import "reflect-metadata";
 import { HTTPMethods } from "../../../common/interfaces/route.interface";
+import { ErrorType } from "../../types/videos";
 
 export class VideoController
   extends BaseController
@@ -111,12 +112,7 @@ export class VideoController
 
   async delete(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const id = parseInt(req.params.id);
-      const success = await this.videoService.deleteById(id);
-
-      if (!success) {
-        res.status(404).send("Video not found");
-      }
+      const success = await this.videoService.deleteAll();
 
       res.status(204).send();
     } catch (error) {
@@ -128,17 +124,22 @@ export class VideoController
   async update(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const id = parseInt(req.params.id);
-      const updatedVideo = await this.videoService.updateVideo(id, req.body);
+      const { errors, video: updatedVideo } =
+        await this.videoService.updateVideo(id, req.body);
 
-      if (Array.isArray(updatedVideo)) {
-        res.status(400).json({ errors: updatedVideo });
+      const errorMessage: ErrorType = {
+        errorsMessages: errors,
+      };
+
+      if (errors.length) {
+        res.status(400).json(errorMessage);
       }
 
       if (!updatedVideo) {
         res.status(404).send("Video not found");
       }
 
-      res.json(updatedVideo);
+      res.status(204).json(updatedVideo);
     } catch (error) {
       this.loggerService.error("Error while updating video", error);
       next(error);

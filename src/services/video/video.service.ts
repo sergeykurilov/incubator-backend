@@ -1,5 +1,8 @@
 import { inject, injectable } from "inversify";
-import { IVideoService } from "./video.service.interface";
+import {
+  IUpdateVideoServiceType,
+  IVideoService,
+} from "./video.service.interface";
 import { ErrorMessage, VideoModel } from "../../types/videos";
 import { CreateVideoDto } from "../../controllers/video/dto/create-video.dto";
 import { UpdateVideoType } from "../../controllers/video/dto/update-video.dto";
@@ -65,15 +68,15 @@ export class VideoService implements IVideoService {
   async updateVideo(
     id: number,
     updatedVideo: UpdateVideoType,
-  ): Promise<VideoModel | ErrorMessage[] | null> {
+  ): Promise<IUpdateVideoServiceType> {
     try {
       const errors = VideoValidator.validateUpdateVideo(updatedVideo);
 
-      if (errors.length) {
-        return errors;
-      }
+      if (errors.length) return { errors, video: null };
 
-      return await this.videoRepository.update(id, updatedVideo);
+      const video = await this.videoRepository.update(id, updatedVideo);
+
+      return { errors, video };
     } catch (error) {
       throw new Error(`Error while updating video`);
     }

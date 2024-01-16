@@ -36,5 +36,5 @@ export interface ErrorMessage {
 }
 
 export interface ErrorType {
-  errorMessages: ErrorMessage[];
+  errorsMessages: ErrorMessage[];
 }

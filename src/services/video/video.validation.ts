@@ -14,7 +14,10 @@ export class VideoValidator {
   static validatePublicationDate(date: string | null): ErrorMessage | null {
     if (date !== undefined && date !== null) {
       if (typeof date !== "string" || !isValid(parseISO(date))) {
-        return this.error("publicationDate", "Invalid publicationDate");
+        return this.error(
+          "publicationDate",
+          "publicationDate must be a valid ISO 8601 date",
+        );
       }
     }
 

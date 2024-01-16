@@ -7,13 +7,13 @@ import { injectable } from "inversify";
 
 @injectable()
 export class VideoRepository implements IVideoRepository {
-  create(video: VideoModel): Promise<VideoModel> {
+  create(video: Partial<VideoModel>): Promise<VideoModel> {
     return new Promise((resolve) => {
       const newId =
         videos.length > 0 ? Math.max(...videos.map((v) => v.id)) + 1 : 1;
       const newVideo = { ...video, id: newId };
-      videos.push(newVideo);
-      resolve(newVideo);
+      videos.push(<VideoModel>newVideo);
+      resolve(<VideoModel>newVideo);
     });
   }
 
