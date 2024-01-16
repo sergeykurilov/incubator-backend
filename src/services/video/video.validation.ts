@@ -5,6 +5,7 @@ import {
 } from "../../types/videos";
 import { isValid } from "date-fns/isValid";
 import { parseISO } from "date-fns/parseISO";
+import { isDate } from "date-fns/isDate";
 import { CreateVideoDto } from "../../controllers/video/dto/create-video.dto";
 
 export class VideoValidator {
@@ -13,13 +14,11 @@ export class VideoValidator {
   }
 
   static validatePublicationDate(date: string | null): ErrorMessage | null {
-    if (date !== undefined && date !== null) {
-      if (typeof date !== "string" || !isValid(parseISO(date))) {
-        return this.error(
-          "publicationDate",
-          "publicationDate must be a valid ISO 8601 date",
-        );
-      }
+    if (!isDate(date) || !isValid(parseISO(date))) {
+      return this.error(
+        "publicationDate",
+        "publicationDate must be a valid ISO 8601 date",
+      );
     }
 
     return null;
@@ -135,58 +134,51 @@ export class VideoValidator {
   static validateUpdateVideo(video: Partial<VideoModel>): ErrorMessage[] {
     const errorMessages: ErrorMessage[] = [];
 
-    if (!!video.canBeDownloaded) {
-      const canBeDownloadedError = this.validateCanBeDownloaded(
-        video.canBeDownloaded,
-      );
-      if (canBeDownloadedError) {
-        errorMessages.push(canBeDownloadedError);
-      }
+    const publicationDateError =
+      video.publicationDate &&
+      this.validatePublicationDate(video.publicationDate);
+
+    if (publicationDateError) {
+      errorMessages.push(publicationDateError);
     }
 
-    if (!!video.title) {
-      const titleError = this.validateTitle(video.title);
-      if (titleError) {
-        errorMessages.push(titleError);
-      }
+    const canBeDownloadedError =
+      video.canBeDownloaded &&
+      this.validateCanBeDownloaded(video.canBeDownloaded);
+
+    if (canBeDownloadedError) {
+      errorMessages.push(canBeDownloadedError);
     }
 
-    if (video.author) {
-      const authorError = this.validateAuthor(video.author);
-      if (authorError) {
-        errorMessages.push(authorError);
-      }
+    const titleError = video.title && this.validateTitle(video.title);
+
+    if (titleError) {
+      errorMessages.push(titleError);
     }
 
-    if (!!video.availableResolutions) {
-      const availableResolutionsError = this.validateAvailableResolutions(
-        video.availableResolutions,
-      );
-      if (availableResolutionsError) {
-        errorMessages.push(availableResolutionsError);
-      }
+    const authorError = video.author && this.validateAuthor(video.author);
+
+    if (authorError) {
+      errorMessages.push(authorError);
     }
 
-    if (!!video.minAgeRestriction) {
-      const minAgeRestrictionError = this.validateMinAgeRestriction(
-        video.minAgeRestriction,
-      );
+    const availableResolutionsError =
+      video.availableResolutions &&
+      this.validateAvailableResolutions(video.availableResolutions);
 
-      if (minAgeRestrictionError) {
-        errorMessages.push(minAgeRestrictionError);
-      }
+    if (availableResolutionsError) {
+      errorMessages.push(availableResolutionsError);
     }
 
-    if (!!video.publicationDate) {
-      const publicationDateError = this.validatePublicationDate(
-        video.publicationDate,
-      );
+    const minAgeRestrictionError =
+      video.minAgeRestriction &&
+      this.validateMinAgeRestriction(video.minAgeRestriction);
 
-      if (publicationDateError) {
-        errorMessages.push(publicationDateError);
-      }
+    if (minAgeRestrictionError) {
+      errorMessages.push(minAgeRestrictionError);
     }
 
+    console.log(errorMessages);
     return errorMessages.filter((error) => error !== null) as ErrorMessage[];
   }
 }

@@ -39,11 +39,7 @@ export class VideoService implements IVideoService {
   }
 
   deleteById(id: number): Promise<boolean> {
-    try {
-      return this.videoRepository.deleteById(id);
-    } catch (e) {
-      throw new Error(`Error while deleting videos`);
-    }
+    return this.videoRepository.deleteById(id);
   }
 
   findAll(): Promise<VideoModel[]> {
@@ -68,6 +64,7 @@ export class VideoService implements IVideoService {
   ): Promise<IReturnVideoServiceType> {
     try {
       const errors = VideoValidator.validateUpdateVideo(updatedVideo);
+      console.log(errors);
       if (errors.length) return { errors, video: null };
 
       return {

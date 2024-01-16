@@ -49,6 +49,78 @@ describe("Video API Routes", () => {
     expect(response.body.id).toBe(createdVideo.id);
   });
 
+  it("PUT /videos/:id should return error messages for invalid data", async () => {
+    const createdVideo = await videoRepository.create(
+      sampleVideo as VideoModel,
+    );
+
+    const invalidData = {
+      author: "length_21-weqweqweqwq",
+      title: "valid title",
+      availableResolutions: ["P240", "P720"],
+      canBeDownloaded: "string",
+      minAgeRestriction: 15,
+      publicationDate: "1995",
+    };
+
+    const response = await request(application)
+      .put(`/videos/${createdVideo.id}`)
+      .send(invalidData);
+
+    expect(response.status).toBe(400);
+
+    expect(response.body.errorsMessages).toEqual([
+      {
+        field: "publicationDate",
+        message: "publicationDate must be a valid ISO 8601 date",
+      },
+      {
+        field: "canBeDownloaded",
+        message: "canBeDownloaded must be a boolean",
+      },
+      {
+        field: "author",
+        message: "Incorrect Author",
+      },
+    ]);
+
+    const unchangedVideo = await videoRepository.findById(createdVideo.id);
+    expect(unchangedVideo?.title).toBe(sampleVideo.title);
+  });
+
+  it("DELETE /videos/:id should return a 404 error with invalid video ID", async () => {
+    const invalidVideoId = 999;
+
+    const updatedData = {
+      title: "Updated Title",
+      author: "Updated Author",
+      canBeDownloaded: true,
+      minAgeRestriction: 18,
+      availableResolutions: ["P144"],
+    };
+
+    const response = await request(application)
+      .put(`/videos/${invalidVideoId}`)
+      .send(updatedData);
+
+    expect(response.status).toBe(404);
+  });
+
+  it("GET /videos should return a list of videos with defined values", async () => {
+    await videoRepository.create(sampleVideo as VideoModel);
+
+    const response = await request(application).get("/videos");
+    expect(response.status).toBe(200);
+
+    expect(response.body.every((video: VideoModel) => video.createdAt)).toBe(
+      true,
+    );
+
+    expect(
+      response.body.every((video: VideoModel) => video.publicationDate),
+    ).toBe(true);
+  });
+
   it("POST /videos should create a new video", async () => {
     const response = await request(application)
       .post("/videos")
@@ -126,12 +198,12 @@ describe("Video API Routes", () => {
     console.log(response.body);
     expect(response.body.errorsMessages).toEqual([
       {
-        field: "author",
-        message: "Incorrect Author",
-      },
-      {
         field: "publicationDate",
         message: "publicationDate must be a valid ISO 8601 date",
+      },
+      {
+        field: "author",
+        message: "Incorrect Author",
       },
     ]);
 
