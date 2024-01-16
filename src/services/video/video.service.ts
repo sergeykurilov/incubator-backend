@@ -72,12 +72,13 @@ export class VideoService implements IVideoService {
     try {
       const errors = VideoValidator.validateUpdateVideo(updatedVideo);
 
-      if (errors.length)
+      if (errors.length) {
         return {
           errors,
           video: null,
           isVideo: Boolean(await this.videoRepository.findById(id)),
         };
+      }
 
       return {
         errors,

@@ -77,51 +77,50 @@ export class VideoValidator {
   }
 
   static validateCreateVideoInput(videoDto: CreateVideoDto): ErrorMessage[] {
-    const errors: ErrorMessage[] = [];
-
-    const titleError = this.validateStringField(videoDto.title, "title", 40);
-    if (titleError) errors.push(titleError);
-
-    const authorError = this.validateStringField(videoDto.author, "author", 20);
-    if (authorError) errors.push(authorError);
-
-    const availableResolutionsError =
-      this.validateArrayContainsValidResolutions(videoDto.availableResolutions);
-    if (availableResolutionsError) errors.push(availableResolutionsError);
-
-    return errors;
+    return [
+      ...(this.validateStringField(videoDto.title, "title", 40)
+        ? [this.validateStringField(videoDto.title, "title", 40)]
+        : []),
+      ...(this.validateStringField(videoDto.author, "author", 20)
+        ? [this.validateStringField(videoDto.author, "author", 20)]
+        : []),
+      ...(this.validateArrayContainsValidResolutions(
+        videoDto.availableResolutions,
+      )
+        ? [
+            this.validateArrayContainsValidResolutions(
+              videoDto.availableResolutions,
+            ),
+          ]
+        : []),
+    ].filter(Boolean) as ErrorMessage[];
   }
 
   static validateUpdateVideo(video: Partial<VideoModel>): ErrorMessage[] {
-    const errors: ErrorMessage[] = [];
-
-    const titleError = this.validateStringField(video.title, "title", 40);
-    if (titleError) errors.push(titleError);
-
-    const publicationDateError = this.validatePublicationDate(
-      video.publicationDate,
-    );
-    if (publicationDateError) errors.push(publicationDateError);
-
-    const canBeDownloadedError = this.validateBooleanField(
-      video.canBeDownloaded,
-      "canBeDownloaded",
-    );
-    if (canBeDownloadedError) errors.push(canBeDownloadedError);
-
-    const authorError = this.validateStringField(video.author, "author", 20);
-    if (authorError) errors.push(authorError);
-
-    const availableResolutionsError =
-      video.availableResolutions &&
-      this.validateArrayContainsValidResolutions(video.availableResolutions);
-    if (availableResolutionsError) errors.push(availableResolutionsError);
-
-    const minAgeRestrictionError = this.validateMinAgeRestriction(
-      video.minAgeRestriction,
-    );
-    if (minAgeRestrictionError) errors.push(minAgeRestrictionError);
-
-    return errors;
+    return [
+      ...(this.validateStringField(video.title, "title", 40)
+        ? [this.validateStringField(video.title, "title", 40)]
+        : []),
+      ...(this.validatePublicationDate(video.publicationDate)
+        ? [this.validatePublicationDate(video.publicationDate)]
+        : []),
+      ...(this.validateBooleanField(video.canBeDownloaded, "canBeDownloaded")
+        ? [this.validateBooleanField(video.canBeDownloaded, "canBeDownloaded")]
+        : []),
+      ...(this.validateStringField(video.author, "author", 20)
+        ? [this.validateStringField(video.author, "author", 20)]
+        : []),
+      ...(video.availableResolutions &&
+      this.validateArrayContainsValidResolutions(video.availableResolutions)
+        ? [
+            this.validateArrayContainsValidResolutions(
+              video.availableResolutions,
+            ),
+          ]
+        : []),
+      ...(this.validateMinAgeRestriction(video.minAgeRestriction)
+        ? [this.validateMinAgeRestriction(video.minAgeRestriction)]
+        : []),
+    ].filter(Boolean) as ErrorMessage[];
   }
 }
