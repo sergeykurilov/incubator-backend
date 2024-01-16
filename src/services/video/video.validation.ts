@@ -2,8 +2,8 @@ import {
   AvailableResolution,
   VideoModel,
   ErrorMessage,
-} from "../../types/videos";
-import { CreateVideoDto } from "../../controllers/video/dto/create-video.dto";
+} from '../../types/videos';
+import { CreateVideoDto } from '../../controllers/video/dto/create-video.dto';
 
 export class VideoValidator {
   static error(field: string, message: string): ErrorMessage {
@@ -12,10 +12,10 @@ export class VideoValidator {
 
   static isStringWithLength(
     value: string | null | undefined,
-    maxLength: number,
+    maxLength: number
   ): boolean {
     return (
-      typeof value === "string" &&
+      typeof value === 'string' &&
       value.trim().length > 0 &&
       value.length <= maxLength
     );
@@ -24,7 +24,7 @@ export class VideoValidator {
   static validateStringField(
     value: string | null | undefined,
     field: string,
-    maxLength: number,
+    maxLength: number
   ): ErrorMessage | null {
     if (!this.isStringWithLength(value, maxLength)) {
       return this.error(field, `Incorrect ${field}`);
@@ -37,8 +37,8 @@ export class VideoValidator {
       /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})\.(\d{3})Z$/;
     if (date && !isoDateRegex.test(date)) {
       return this.error(
-        "publicationDate",
-        "publicationDate must be a valid ISO 8601 date",
+        'publicationDate',
+        'publicationDate must be a valid ISO 8601 date'
       );
     }
     return null;
@@ -46,50 +46,50 @@ export class VideoValidator {
 
   static validateBooleanField(
     value: boolean | undefined,
-    field: string,
+    field: string
   ): ErrorMessage | null {
-    if (value !== undefined && typeof value !== "boolean") {
+    if (value !== undefined && typeof value !== 'boolean') {
       return this.error(field, `${field} must be a boolean`);
     }
     return null;
   }
 
   static validateArrayContainsValidResolutions(
-    resolutions: AvailableResolution[],
+    resolutions: AvailableResolution[]
   ): ErrorMessage | null {
     if (
       !Array.isArray(resolutions) ||
-      resolutions.some((r) => !AvailableResolution[r])
+      resolutions.some(r => !AvailableResolution[r])
     ) {
       return this.error(
-        "availableResolutions",
-        "Invalid availableResolutions value",
+        'availableResolutions',
+        'Invalid availableResolutions value'
       );
     }
     return null;
   }
 
   static validateMinAgeRestriction(age?: number | null): ErrorMessage | null {
-    if (age !== null && (typeof age !== "number" || age < 1 || age > 18)) {
-      return this.error("minAgeRestriction", "Invalid minAgeRestriction");
+    if (age !== null && (typeof age !== 'number' || age < 1 || age > 18)) {
+      return this.error('minAgeRestriction', 'Invalid minAgeRestriction');
     }
     return null;
   }
 
   static validateCreateVideoInput(videoDto: CreateVideoDto): ErrorMessage[] {
     return [
-      ...(this.validateStringField(videoDto.title, "title", 40)
-        ? [this.validateStringField(videoDto.title, "title", 40)]
+      ...(this.validateStringField(videoDto.title, 'title', 40)
+        ? [this.validateStringField(videoDto.title, 'title', 40)]
         : []),
-      ...(this.validateStringField(videoDto.author, "author", 20)
-        ? [this.validateStringField(videoDto.author, "author", 20)]
+      ...(this.validateStringField(videoDto.author, 'author', 20)
+        ? [this.validateStringField(videoDto.author, 'author', 20)]
         : []),
       ...(this.validateArrayContainsValidResolutions(
-        videoDto.availableResolutions,
+        videoDto.availableResolutions
       )
         ? [
             this.validateArrayContainsValidResolutions(
-              videoDto.availableResolutions,
+              videoDto.availableResolutions
             ),
           ]
         : []),
@@ -98,23 +98,23 @@ export class VideoValidator {
 
   static validateUpdateVideo(video: Partial<VideoModel>): ErrorMessage[] {
     return [
-      ...(this.validateStringField(video.title, "title", 40)
-        ? [this.validateStringField(video.title, "title", 40)]
+      ...(this.validateStringField(video.title, 'title', 40)
+        ? [this.validateStringField(video.title, 'title', 40)]
         : []),
       ...(this.validatePublicationDate(video.publicationDate)
         ? [this.validatePublicationDate(video.publicationDate)]
         : []),
-      ...(this.validateBooleanField(video.canBeDownloaded, "canBeDownloaded")
-        ? [this.validateBooleanField(video.canBeDownloaded, "canBeDownloaded")]
+      ...(this.validateBooleanField(video.canBeDownloaded, 'canBeDownloaded')
+        ? [this.validateBooleanField(video.canBeDownloaded, 'canBeDownloaded')]
         : []),
-      ...(this.validateStringField(video.author, "author", 20)
-        ? [this.validateStringField(video.author, "author", 20)]
+      ...(this.validateStringField(video.author, 'author', 20)
+        ? [this.validateStringField(video.author, 'author', 20)]
         : []),
       ...(video.availableResolutions &&
       this.validateArrayContainsValidResolutions(video.availableResolutions)
         ? [
             this.validateArrayContainsValidResolutions(
-              video.availableResolutions,
+              video.availableResolutions
             ),
           ]
         : []),

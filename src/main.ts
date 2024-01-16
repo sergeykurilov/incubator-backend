@@ -1,17 +1,17 @@
-import { Container, ContainerModule, interfaces } from "inversify";
-import { App } from "./app";
-import { ILogger } from "../common/logger/logger.interface";
-import { LoggerService } from "../common/logger/logger.service";
-import { SERVICE_IDENTIFIER } from "../common/consts/service-identifiers";
-import { IExceptionFilter } from "../common/exceptions/exception.filter.interface";
-import { ExceptionFilter } from "../common/exceptions/exception.filter";
-import { IVideoRepository } from "./repositories/video/video.repository.interface";
-import { VideoRepository } from "./repositories/video/video.repository";
-import { IVideoService } from "./services/video/video.service.interface";
-import { VideoService } from "./services/video/video.service";
-import { VideoController } from "./controllers/video/video.controller";
-import { IVideoController } from "./controllers/video/video.controller.interface";
-import "reflect-metadata";
+import { Container, ContainerModule, interfaces } from 'inversify';
+import { App } from './app';
+import { ILogger } from '../common/logger/logger.interface';
+import { LoggerService } from '../common/logger/logger.service';
+import { SERVICE_IDENTIFIER } from '../common/consts/service-identifiers';
+import { IExceptionFilter } from '../common/exceptions/exception.filter.interface';
+import { ExceptionFilter } from '../common/exceptions/exception.filter';
+import { IVideoRepository } from './repositories/video/video.repository.interface';
+import { VideoRepository } from './repositories/video/video.repository';
+import { IVideoService } from './services/video/video.service.interface';
+import { VideoService } from './services/video/video.service';
+import { VideoController } from './controllers/video/video.controller';
+import { IVideoController } from './controllers/video/video.controller.interface';
+import 'reflect-metadata';
 
 export interface IBootstrapReturn {
   appContainer: Container;
@@ -42,8 +42,8 @@ async function bootstrap(): Promise<IBootstrapReturn> {
   appContainer.load(appBindings);
   const app = appContainer.get<App>(SERVICE_IDENTIFIER.Application);
 
-  await app.init().catch((error) => {
-    console.error("Error during initialization:", error);
+  await app.init().catch(error => {
+    console.error('Error during initialization:', error);
     app.close();
   });
 

@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response, Router } from "express";
+import { NextFunction, Request, Response, Router } from 'express';
 
 export interface IVideoController {
   getAll: (req: Request, res: Response, next: NextFunction) => void;

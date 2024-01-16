@@ -1,17 +1,17 @@
-import { IVideoRepository } from "./video.repository.interface";
-import { VideoModel } from "../../types/videos";
-import { videos } from "./db";
-import "reflect-metadata";
-import { UpdateVideoType } from "../../controllers/video/dto/update-video.dto";
-import { injectable } from "inversify";
-import { addDays } from "date-fns/addDays";
+import { IVideoRepository } from './video.repository.interface';
+import { VideoModel } from '../../types/videos';
+import { videos } from './db';
+import 'reflect-metadata';
+import { UpdateVideoType } from '../../controllers/video/dto/update-video.dto';
+import { injectable } from 'inversify';
+import { addDays } from 'date-fns/addDays';
 
 @injectable()
 export class VideoRepository implements IVideoRepository {
   create(video: Partial<VideoModel>): Promise<VideoModel> {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       const newId =
-        videos.length > 0 ? Math.max(...videos.map((v) => v.id)) + 1 : 1;
+        videos.length > 0 ? Math.max(...videos.map(v => v.id)) + 1 : 1;
 
       const newVideo = {
         id: newId,
@@ -29,10 +29,10 @@ export class VideoRepository implements IVideoRepository {
 
   update(
     id: number,
-    updatedVideo: UpdateVideoType,
+    updatedVideo: UpdateVideoType
   ): Promise<VideoModel | null> {
-    return new Promise((resolve) => {
-      const videoIndex = videos.findIndex((video) => video.id === id);
+    return new Promise(resolve => {
+      const videoIndex = videos.findIndex(video => video.id === id);
       if (videoIndex === -1) {
         resolve(null);
       } else {
@@ -43,8 +43,8 @@ export class VideoRepository implements IVideoRepository {
   }
 
   deleteById(id: number): Promise<boolean> {
-    return new Promise((resolve) => {
-      const videoIndex = videos.findIndex((video) => video.id === id);
+    return new Promise(resolve => {
+      const videoIndex = videos.findIndex(video => video.id === id);
       if (videoIndex === -1) {
         resolve(false);
       } else {
@@ -55,21 +55,21 @@ export class VideoRepository implements IVideoRepository {
   }
 
   deleteAll(): Promise<void> {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       videos.length = 0;
       resolve();
     });
   }
 
   findAll(): Promise<VideoModel[]> {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       return resolve(videos);
     });
   }
 
   findById(id: number): Promise<VideoModel | null> {
-    return new Promise((resolve) => {
-      const video = videos.find((video) => video.id === id);
+    return new Promise(resolve => {
+      const video = videos.find(video => video.id === id);
       if (video) {
         resolve(video);
       } else {
