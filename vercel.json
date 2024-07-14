@@ -6,7 +6,7 @@
       "src": "src/main.ts",
       "use": "@vercel/node",
       "config": {
-        "includeFiles": ["src/**/*.ts", "src/**/*.tsx"]
+        "includeFiles": ["src/**/*.js", "src/**/*.jsx"]
       }
     }
   ],
