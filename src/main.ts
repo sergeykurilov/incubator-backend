@@ -94,6 +94,4 @@ async function bootstrap(): Promise<IBootstrapReturn> {
   return { appContainer, app };
 }
 
-bootstrap();
-
-export default bootstrap;
+export default bootstrap();

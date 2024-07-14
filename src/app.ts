@@ -1,6 +1,5 @@
 import express, { Express } from "express";
 import { Server } from "http";
-
 import { inject, injectable } from "inversify";
 import "reflect-metadata";
 import { IConfigService } from "./config/config.service.interface";
