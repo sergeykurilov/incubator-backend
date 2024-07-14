@@ -1,0 +1,36 @@
+import { Request, Response, NextFunction } from "express";
+import { IMiddleware } from "../interfaces/middleware.interface";
+import { HttpStatusCodes } from "../interfaces/http-status-codes.interface";
+import { configDotenv } from "dotenv";
+configDotenv();
+
+export class AuthGuard implements IMiddleware {
+  execute(req: Request, res: Response, next: NextFunction): void {
+    const auth = req.headers["authorization"] as string;
+
+    if (!auth) {
+      res.status(HttpStatusCodes.UNAUTHORIZED).send("Unauthorized");
+      return;
+    }
+
+    const [basic, token] = auth.split(" ");
+
+    if (basic !== "Basic") {
+      res.sendStatus(HttpStatusCodes.UNAUTHORIZED);
+      return;
+    }
+
+    const decodedData = Buffer.from(token, "base64").toString();
+    const [login, password] = decodedData.split(":");
+
+    if (
+      login !== process.env.AUTH_LOGIN ||
+      password !== process.env.AUTH_PASSWORD
+    ) {
+      res.sendStatus(HttpStatusCodes.UNAUTHORIZED);
+      return;
+    }
+
+    return next();
+  }
+}

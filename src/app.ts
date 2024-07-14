@@ -2,12 +2,18 @@ import express, { Express } from "express";
 import { Server } from "http";
 
 import { inject, injectable } from "inversify";
-import { ILogger } from "../common/logger/logger.interface";
-import { SERVICE_IDENTIFIER } from "../common/consts/service-identifiers";
-import { IExceptionFilter } from "../common/exceptions/exception.filter.interface";
-import { IVideoService } from "./services/video/video.service.interface";
-import { IVideoController } from "./controllers/video/video.controller.interface";
 import "reflect-metadata";
+import { IConfigService } from "./config/config.service.interface";
+import { MongoDBService } from "./database/database.service";
+import { IVideoController } from "./modules/video/controllers/video.controller.interface";
+import { IVideoService } from "./modules/video/services/video.service.interface";
+import { IBlogController } from "./modules/blog/controllers/blog.controller.interface";
+import { SERVICE_IDENTIFIER } from "./modules/common/consts/service-identifiers.consts";
+import { ILogger } from "./modules/common/logger/logger.interface";
+import { IExceptionFilter } from "./modules/common/exceptions/exception.filter.interface";
+import { IBlogService } from "./modules/blog/services/blog.service.interface";
+import { IPostController } from "./modules/post/controllers/post.controller.interface";
+import { IPostService } from "./modules/post/services/post.service.interface";
 
 @injectable()
 export class App {
@@ -21,8 +27,23 @@ export class App {
     private videoController: IVideoController,
     @inject(SERVICE_IDENTIFIER.VideoService)
     private videoService: IVideoService,
+
+    @inject(SERVICE_IDENTIFIER.BlogController)
+    private blogController: IBlogController,
+    @inject(SERVICE_IDENTIFIER.BlogService)
+    private blogService: IBlogService,
+
+    @inject(SERVICE_IDENTIFIER.PostController)
+    private postController: IPostController,
+    @inject(SERVICE_IDENTIFIER.BlogService)
+    private postService: IPostService,
+
     @inject(SERVICE_IDENTIFIER.ExceptionFilter)
     private exceptionFilter: IExceptionFilter,
+    @inject(SERVICE_IDENTIFIER.ConfigService)
+    private configService: IConfigService,
+    @inject(SERVICE_IDENTIFIER.MongoDBService)
+    private mongoDbService: MongoDBService,
   ) {
     this.app = express();
     this.port = 8000;
@@ -34,6 +55,8 @@ export class App {
 
   useRoutes(): void {
     this.app.use("/videos", this.videoController.router);
+    this.app.use("/blogs", this.blogController.router);
+    this.app.use("/posts", this.postController.router);
     this.app.delete("/testing/all-data", async (req, res, next) => {
       try {
         await this.videoService.deleteAll();
@@ -52,6 +75,7 @@ export class App {
     this.useMiddleware();
     this.useRoutes();
     this.useExceptionFilters();
+    await this.mongoDbService.connect();
     this.server = this.app.listen(this.port);
     this.logger.log(`Server running on http://localhost:${this.port}`);
   }

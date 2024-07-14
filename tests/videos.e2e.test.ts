@@ -1,9 +1,12 @@
 import { App } from "supertest/types";
 import { boot } from "../src/main";
-import { VideoRepository } from "../src/repositories/video/video.repository";
-import { AvailableResolution, VideoModel } from "../src/types/videos";
-import { IVideoRepository } from "../src/repositories/video/video.repository.interface";
-import { SERVICE_IDENTIFIER } from "../common/consts/service-identifiers";
+import { VideoRepository } from "../src/modules/video/repositories/video.repository";
+import { IVideoRepository } from "../src/modules/video/repositories/video.repository.interface";
+import {
+  AvailableResolution,
+  VideoEntity,
+} from "../src/modules/video/entity/videos";
+import { SERVICE_IDENTIFIER } from "../src/modules/common/consts/service-identifiers.consts";
 const request = require("supertest");
 
 const sampleVideo = {
@@ -30,7 +33,7 @@ describe("Video API Routes", () => {
 
   it("PUT /videos/:id should return error for invalid publicationDate", async () => {
     const createdVideo = await videoRepository.create(
-      sampleVideo as VideoModel,
+      sampleVideo as VideoEntity,
     );
 
     const invalidData = {
@@ -61,7 +64,7 @@ describe("Video API Routes", () => {
 
   it("PUT /videos/:id should return error messages for invalid data", async () => {
     const createdVideo = await videoRepository.create(
-      sampleVideo as VideoModel,
+      sampleVideo as VideoEntity,
     );
 
     const invalidData = {
@@ -120,7 +123,7 @@ describe("Video API Routes", () => {
 
   it("PUT /videos should return error for incorrect input data", async () => {
     const createdVideo = await videoRepository.create(
-      sampleVideo as VideoModel,
+      sampleVideo as VideoEntity,
     );
 
     const invalidData = {
@@ -164,7 +167,7 @@ describe("Video API Routes", () => {
   });
 
   it("GET /videos should return a list of videos", async () => {
-    await videoRepository.create(sampleVideo as VideoModel);
+    await videoRepository.create(sampleVideo as VideoEntity);
 
     const response = await request(application).get("/videos");
     expect(response.status).toBe(200);
@@ -174,7 +177,7 @@ describe("Video API Routes", () => {
 
   it("GET /videos/:id should return a single video by ID", async () => {
     const createdVideo = await videoRepository.create(
-      sampleVideo as VideoModel,
+      sampleVideo as VideoEntity,
     );
 
     const response = await request(application).get(
@@ -203,17 +206,17 @@ describe("Video API Routes", () => {
   });
 
   it("GET /videos should return a list of videos with defined values", async () => {
-    await videoRepository.create(sampleVideo as VideoModel);
+    await videoRepository.create(sampleVideo as VideoEntity);
 
     const response = await request(application).get("/videos");
     expect(response.status).toBe(200);
 
-    expect(response.body.every((video: VideoModel) => video.createdAt)).toBe(
+    expect(response.body.every((video: VideoEntity) => video.createdAt)).toBe(
       true,
     );
     console.log(response.body);
     expect(
-      response.body.every((video: VideoModel) => video.publicationDate),
+      response.body.every((video: VideoEntity) => video.publicationDate),
     ).toBe(true);
   });
 
@@ -233,7 +236,7 @@ describe("Video API Routes", () => {
 
   it("PUT /videos/:id should update an existing video with valid data", async () => {
     const createdVideo = await videoRepository.create(
-      sampleVideo as VideoModel,
+      sampleVideo as VideoEntity,
     );
 
     const updatedData = {
@@ -274,7 +277,7 @@ describe("Video API Routes", () => {
 
   it("PUT /videos/:id should return a 400 error with invalid data", async () => {
     const createdVideo = await videoRepository.create(
-      sampleVideo as VideoModel,
+      sampleVideo as VideoEntity,
     );
 
     const invalidData = {
@@ -309,7 +312,7 @@ describe("Video API Routes", () => {
 
   it("DELETE /videos/:id should delete an existing video", async () => {
     const createdVideo = await videoRepository.create(
-      sampleVideo as VideoModel,
+      sampleVideo as VideoEntity,
     );
 
     const response = await request(application).delete(
@@ -322,12 +325,12 @@ describe("Video API Routes", () => {
   });
 
   it("DELETE /videos should delete all videos", async () => {
-    await videoRepository.create(sampleVideo as VideoModel);
+    await videoRepository.create(sampleVideo as VideoEntity);
     await videoRepository.create({
       title: "Another Video",
       author: "Another Author",
       availableResolutions: [AvailableResolution.P240],
-    } as VideoModel);
+    } as VideoEntity);
 
     const response = await request(application).delete("/videos");
     expect(response.status).toBe(204);
