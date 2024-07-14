@@ -1,5 +1,5 @@
 import { App } from "supertest/types";
-import boot from "../src/main";
+import { boot } from "../src/main";
 import { VideoRepository } from "../src/modules/video/repositories/video.repository";
 import { IVideoRepository } from "../src/modules/video/repositories/video.repository.interface";
 import {
@@ -20,7 +20,7 @@ describe("Video API Routes", () => {
   let videoRepository: VideoRepository;
 
   beforeAll(async () => {
-    const bootstrap = await boot();
+    const bootstrap = await boot;
     application = bootstrap.app.app;
     videoRepository = bootstrap.appContainer.get<IVideoRepository>(
       SERVICE_IDENTIFIER.VideoRepository,
