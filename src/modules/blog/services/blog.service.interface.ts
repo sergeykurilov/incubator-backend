@@ -7,5 +7,5 @@ export interface IBlogService {
   update: (id: string, updateBlogDto: IBlogDto) => Promise<IBlogEntity | null>;
   create: (blog: IBlogDto) => Promise<number>;
   deleteById: (id: string) => Promise<boolean>;
-  deleteAll: () => Promise<void>;
+  deleteAll: () => Promise<boolean>;
 }

@@ -50,6 +50,12 @@ export class BlogController extends BaseController implements IBlogController {
         func: this.deleteById,
         middlewares: [new AuthGuard()],
       },
+      {
+        path: "/",
+        method: HTTPMethods.DELETE,
+        func: this.deleteAll,
+        middlewares: [new AuthGuard()],
+      },
     ]);
   }
 
@@ -102,6 +108,20 @@ export class BlogController extends BaseController implements IBlogController {
       const video = await this.blogService.deleteById(String(id));
 
       res.status(HttpStatusCodes.OK).json(video);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async deleteAll(
+    req: RequestWithParams,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      await this.blogService.deleteAll();
+
+      res.status(HttpStatusCodes.OK);
     } catch (error) {
       next(error);
     }

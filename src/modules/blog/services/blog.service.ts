@@ -22,7 +22,7 @@ export class BlogService implements IBlogService {
     return this.blogRepository.create(createBlogDto);
   }
 
-  deleteAll(): Promise<void> {
+  deleteAll(): Promise<boolean> {
     return this.blogRepository.deleteAll();
   }
 

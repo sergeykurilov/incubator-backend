@@ -49,10 +49,10 @@ export class BlogRepository implements IBlogRepository {
     });
   }
 
-  deleteAll(): Promise<void> {
+  deleteAll(): Promise<boolean> {
     return new Promise((resolve) => {
       blogDb.blogs = [];
-      resolve();
+      resolve(true);
     });
   }
 
