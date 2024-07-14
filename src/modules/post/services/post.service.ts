@@ -5,7 +5,7 @@ import { HttpStatusCodes } from "../../common/interfaces/http-status-codes.inter
 import { IPostService } from "./post.service.interface";
 import { IPostRepository } from "../repositories/post.repository.interface";
 import { IPostEntity } from "../entity/post";
-import { IPostDto } from "../controllers/dto/post.dto";
+import { PostDto } from "../controllers/dto/post.dto";
 
 @injectable()
 export class PostService implements IPostService {
@@ -22,13 +22,13 @@ export class PostService implements IPostService {
     return this.blogRepository.deleteAll();
   }
 
-  create(createBlogDto: IPostDto): Promise<IPostEntity> {
+  create(createBlogDto: PostDto): Promise<IPostEntity> {
     return this.blogRepository.create(createBlogDto);
   }
 
   async update(
     id: string,
-    createBlogDto: IPostDto,
+    createBlogDto: PostDto,
   ): Promise<IPostEntity | null> {
     const blog = await this.blogRepository.findById(id);
 

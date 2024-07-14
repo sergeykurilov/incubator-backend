@@ -3,7 +3,7 @@ import { injectable } from "inversify";
 import { IPostEntity } from "../entity/post";
 import { IPostRepository } from "./post.repository.interface";
 import { blogDb } from "../../../database/blogDb";
-import { IPostDto } from "../controllers/dto/post.dto";
+import { PostDto } from "../controllers/dto/post.dto";
 
 @injectable()
 export class PostRepository implements IPostRepository {
@@ -33,7 +33,7 @@ export class PostRepository implements IPostRepository {
     });
   }
 
-  create(createPostDto: IPostDto): Promise<IPostEntity> {
+  create(createPostDto: PostDto): Promise<IPostEntity> {
     const lastPost = blogDb.posts[blogDb.posts.length - 1];
     const newPostId = lastPost ? String(Number(lastPost.id) + 1) : "0";
 
@@ -55,7 +55,7 @@ export class PostRepository implements IPostRepository {
     });
   }
 
-  update(id: string, updatePostDto: IPostDto): Promise<IPostEntity | null> {
+  update(id: string, updatePostDto: PostDto): Promise<IPostEntity | null> {
     return new Promise((resolve, reject) => {
       let updatedPost: IPostEntity | undefined;
 

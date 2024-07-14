@@ -3,7 +3,7 @@ import { IBlogService } from "./blog.service.interface";
 import { IBlogRepository } from "../repositories/blog.repository.interface";
 import { IBlogEntity } from "../entity/blog";
 import { SERVICE_IDENTIFIER } from "../../common/consts/service-identifiers.consts";
-import { IBlogDto } from "../controllers/dto/blog.dto";
+import { BlogDto } from "../controllers/dto/blog.dto";
 import { HTTPError } from "../../common/exceptions/http-error";
 import { HttpStatusCodes } from "../../common/interfaces/http-status-codes.interface";
 
@@ -18,7 +18,7 @@ export class BlogService implements IBlogService {
     return this.blogRepository.findAll();
   }
 
-  create(createBlogDto: IBlogDto): Promise<number> {
+  create(createBlogDto: BlogDto): Promise<number> {
     return this.blogRepository.create(createBlogDto);
   }
 
@@ -28,7 +28,7 @@ export class BlogService implements IBlogService {
 
   async update(
     id: string,
-    createBlogDto: IBlogDto,
+    createBlogDto: BlogDto,
   ): Promise<IBlogEntity | null> {
     const blog = await this.blogRepository.findById(id);
 

@@ -1,12 +1,6 @@
 import { IsString, Length, Matches } from "class-validator";
 
-export interface IBlogDto {
-  name: string;
-  description: string;
-  websiteUrl: string;
-}
-
-export class BlogDto implements IBlogDto {
+export class BlogDto {
   @IsString({ message: "Name must be a string" })
   @Length(1, 15, { message: "Name must be between 1 and 15 characters" })
   name: string;

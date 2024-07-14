@@ -3,8 +3,8 @@ import { injectable } from "inversify";
 import { IBlogRepository } from "./blog.repository.interface";
 import { IBlogEntity } from "../entity/blog";
 import { blogDb } from "../../../database/blogDb";
-import { IBlogDto } from "../controllers/dto/blog.dto";
 import { HttpStatusCodes } from "../../common/interfaces/http-status-codes.interface";
+import { BlogDto } from "../controllers/dto/blog.dto";
 
 @injectable()
 export class BlogRepository implements IBlogRepository {
@@ -34,7 +34,7 @@ export class BlogRepository implements IBlogRepository {
     });
   }
 
-  create(createBlogDto: IBlogDto): Promise<number> {
+  create(createBlogDto: BlogDto): Promise<number> {
     const lastBlog = blogDb.blogs[blogDb.blogs.length - 1];
     const newBlogId = lastBlog ? String(Number(lastBlog.id) + 1) : "0";
 
@@ -56,7 +56,7 @@ export class BlogRepository implements IBlogRepository {
     });
   }
 
-  update(id: string, updateBlogDto: IBlogDto): Promise<IBlogEntity | null> {
+  update(id: string, updateBlogDto: BlogDto): Promise<IBlogEntity | null> {
     return new Promise((resolve, reject) => {
       let updatedBlog: IBlogEntity | undefined;
 

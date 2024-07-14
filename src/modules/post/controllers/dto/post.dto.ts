@@ -1,13 +1,6 @@
 import { IsString, Length } from "class-validator";
 
-export interface IPostDto {
-  title: string;
-  shortDescription: string;
-  content: string;
-  blogId: string;
-}
-
-export class PostDto implements IPostDto {
+export class PostDto {
   @IsString({ message: "Title must be a string" })
   @Length(1, 30, { message: "Title must be between 1 and 30 characters" })
   title: string;
