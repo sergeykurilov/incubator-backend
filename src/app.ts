@@ -13,6 +13,9 @@ import { IExceptionFilter } from "./modules/common/exceptions/exception.filter.i
 import { IBlogService } from "./modules/blog/services/blog.service.interface";
 import { IPostController } from "./modules/post/controllers/post.controller.interface";
 import { IPostService } from "./modules/post/services/post.service.interface";
+import { configDotenv } from "dotenv";
+
+configDotenv();
 
 @injectable()
 export class App {
@@ -45,7 +48,7 @@ export class App {
     private mongoDbService: MongoDBService,
   ) {
     this.app = express();
-    this.port = 8000;
+    this.port = 3000;
   }
 
   useMiddleware(): void {
