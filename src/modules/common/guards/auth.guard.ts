@@ -1,8 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { IMiddleware } from "../interfaces/middleware.interface";
 import { HttpStatusCodes } from "../interfaces/http-status-codes.interface";
-import { configDotenv } from "dotenv";
-configDotenv();
 
 export class AuthGuard implements IMiddleware {
   execute(req: Request, res: Response, next: NextFunction): void {
