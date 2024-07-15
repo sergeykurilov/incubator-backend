@@ -47,8 +47,7 @@ export class App {
     private mongoDbService: MongoDBService,
   ) {
     this.app = express();
-    this.config = configService;
-    this.port = Number(this.config.get("PORT")) || 8999;
+    this.port = Number(configService.get("PORT")) || 3000;
   }
 
   useMiddleware(): void {
