@@ -46,6 +46,7 @@ export class App {
     private mongoDbService: MongoDBService,
   ) {
     this.app = express();
+    console.log(process.env.PORT);
     this.port = Number(this.configService.get("PORT")) || 8300;
   }
 
