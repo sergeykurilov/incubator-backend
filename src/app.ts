@@ -20,6 +20,7 @@ export class App {
   app: Express;
   server: Server;
   port: number;
+  config: IConfigService;
 
   constructor(
     @inject(SERVICE_IDENTIFIER.ILogger) private logger: ILogger,
@@ -46,7 +47,8 @@ export class App {
     private mongoDbService: MongoDBService,
   ) {
     this.app = express();
-    this.port = Number(55247);
+    this.config = configService;
+    this.port = Number(this.config.get("PORT")) || 8999;
   }
 
   useMiddleware(): void {
@@ -92,7 +94,7 @@ export class App {
     this.useMiddleware();
     this.useRoutes();
     this.useExceptionFilters();
-    await this.mongoDbService.connect();
+    // await this.mongoDbService.connect();
     this.server = this.app.listen(this.port);
     this.logger.log(`Server running on http://localhost:${this.port}`);
   }

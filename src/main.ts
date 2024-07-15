@@ -1,6 +1,7 @@
 import { Container, ContainerModule, interfaces } from "inversify";
 import { App } from "./app";
 import "reflect-metadata";
+import { VercelRequest, VercelResponse } from "@vercel/node";
 import { IConfigService } from "./config/config.service.interface";
 import { ConfigService } from "./config/config.service";
 import { MongoDBService } from "./database/database.service";
@@ -81,7 +82,10 @@ export const appBindings = new ContainerModule((bind: interfaces.Bind) => {
     .inSingletonScope();
 });
 
-async function bootstrap(): Promise<IBootstrapReturn> {
+export default async function bootstrap(
+  req: VercelRequest,
+  res: VercelResponse,
+): Promise<IBootstrapReturn> {
   const appContainer = new Container();
   appContainer.load(appBindings);
   const app = appContainer.get<App>(SERVICE_IDENTIFIER.Application);
@@ -93,5 +97,3 @@ async function bootstrap(): Promise<IBootstrapReturn> {
 
   return { appContainer, app };
 }
-
-export const boot = bootstrap();
