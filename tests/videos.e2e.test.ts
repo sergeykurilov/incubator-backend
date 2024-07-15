@@ -20,7 +20,7 @@ describe("Video API Routes", () => {
   let videoRepository: VideoRepository;
 
   beforeAll(async () => {
-    const bootstrap = await boot;
+    const bootstrap = await boot();
     application = bootstrap.app.app;
     videoRepository = bootstrap.appContainer.get<IVideoRepository>(
       SERVICE_IDENTIFIER.VideoRepository,

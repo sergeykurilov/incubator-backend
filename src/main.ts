@@ -27,7 +27,7 @@ import { IPostController } from "./modules/post/controllers/post.controller.inte
 import { PostController } from "./modules/post/controllers/post.controller";
 import { PostRepository } from "./modules/post/repositories/post.repository";
 import { IPostRepository } from "./modules/post/repositories/post.repository.interface";
-
+import dotenv from "dotenv";
 export interface IBootstrapReturn {
   appContainer: Container;
   app: App;
@@ -82,6 +82,7 @@ export const appBindings = new ContainerModule((bind: interfaces.Bind) => {
 });
 
 async function bootstrap(): Promise<IBootstrapReturn> {
+  dotenv.config();
   const appContainer = new Container();
   appContainer.load(appBindings);
   const app = appContainer.get<App>(SERVICE_IDENTIFIER.Application);
@@ -94,4 +95,4 @@ async function bootstrap(): Promise<IBootstrapReturn> {
   return { appContainer, app };
 }
 
-export default bootstrap();
+export default bootstrap;

@@ -77,7 +77,7 @@ export class App {
     this.useMiddleware();
     this.useRoutes();
     this.useExceptionFilters();
-    // await this.mongoDbService.connect();
+    await this.mongoDbService.connect();
     this.server = this.app.listen(8080);
     this.logger.log(`Server running on http://localhost:${this.port}`);
   }
