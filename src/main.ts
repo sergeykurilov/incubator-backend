@@ -27,6 +27,7 @@ import { IPostController } from "./modules/post/controllers/post.controller.inte
 import { PostController } from "./modules/post/controllers/post.controller";
 import { PostRepository } from "./modules/post/repositories/post.repository";
 import { IPostRepository } from "./modules/post/repositories/post.repository.interface";
+
 export interface IBootstrapReturn {
   appContainer: Container;
   app: App;
@@ -80,11 +81,17 @@ export const appBindings = new ContainerModule((bind: interfaces.Bind) => {
     .inSingletonScope();
 });
 
-const appContainer = new Container();
-appContainer.load(appBindings);
-const app = appContainer.get<App>(SERVICE_IDENTIFIER.Application);
+async function bootstrap(): Promise<IBootstrapReturn> {
+  const appContainer = new Container();
+  appContainer.load(appBindings);
+  const app = appContainer.get<App>(SERVICE_IDENTIFIER.Application);
 
-app.init().catch((error) => {
-  console.error("Error during initialization:", error);
-  app.close();
-});
+  await app.init().catch((error) => {
+    console.error("Error during initialization:", error);
+    app.close();
+  });
+
+  return { appContainer, app };
+}
+
+bootstrap();
