@@ -5,9 +5,10 @@ for more about ignoring files.
 /.pnp
 .pnp.js
 .idea
+/dist
 # testing
 /coverage
-#.env
+.env
 # production
 /build
 
