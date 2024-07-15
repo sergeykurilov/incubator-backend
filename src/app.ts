@@ -47,7 +47,7 @@ export class App {
   ) {
     this.app = express();
     console.log(process.env.PORT);
-    this.port = Number(this.configService.get("PORT")) || 8300;
+    this.port = Number(process.env.PORT) || 8300;
   }
 
   useMiddleware(): void {
