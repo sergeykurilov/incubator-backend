@@ -72,7 +72,7 @@ export class VideoController
   ): Promise<void> {
     try {
       await this.videoService.deleteAll();
-      res.status(HttpStatusCodes.CREATED);
+      res.sendStatus(HttpStatusCodes.CREATED);
     } catch (error) {
       this.loggerService.error("Error getting all videos", error);
       next(error);
@@ -83,11 +83,11 @@ export class VideoController
     const video = await this.videoService.findById(+id);
 
     if (!video?.id) {
-      res.status(HttpStatusCodes.NOT_FOUND).send();
+      res.sendStatus(HttpStatusCodes.NOT_FOUND).send();
       return;
     }
 
-    res.status(HttpStatusCodes.OK).json(video);
+    res.sendStatus(HttpStatusCodes.OK).json(video);
   }
 
   async deleteById({ params: { id } }: Request, res: Response): Promise<void> {
@@ -110,10 +110,10 @@ export class VideoController
       };
 
       if (errors.length > 0) {
-        res.status(HttpStatusCodes.BAD_REQUEST).json(errorMessage);
+        res.sendStatus(HttpStatusCodes.BAD_REQUEST).json(errorMessage);
       }
 
-      res.status(HttpStatusCodes.CREATED).json(createdVideo);
+      res.sendStatus(HttpStatusCodes.CREATED).json(createdVideo);
     } catch (error) {
       this.loggerService.error("Error while creating video", error);
       next(error);
@@ -123,7 +123,7 @@ export class VideoController
   async delete(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       await this.videoService.deleteAll();
-      res.status(HttpStatusCodes.NO_CONTENT).send();
+      res.sendStatus(HttpStatusCodes.NO_CONTENT).send();
     } catch (error) {
       this.loggerService.error("Error while deleting video", error);
       next(error);
@@ -145,14 +145,14 @@ export class VideoController
 
       // TODO: improve error handling
       if (!isVideo) {
-        res.status(HttpStatusCodes.NOT_FOUND).send("Video not found");
+        res.sendStatus(HttpStatusCodes.NOT_FOUND).send("Video not found");
       }
 
       if (errors.length > 0) {
-        res.status(HttpStatusCodes.BAD_REQUEST).json(errorMessage);
+        res.sendStatus(HttpStatusCodes.BAD_REQUEST).json(errorMessage);
       }
 
-      res.status(HttpStatusCodes.NO_CONTENT).json(updatedVideo);
+      res.sendStatus(HttpStatusCodes.NO_CONTENT).json(updatedVideo);
     } catch (error) {
       this.loggerService.error("Error while updating video", error);
       next(error);

@@ -34,7 +34,7 @@ export class ExceptionFilter<T> implements IExceptionFilter {
       const errorResponse: APIErrorResult = {
         errorsMessages: err.errorsMessages,
       };
-      res.status(err.statusCode).json(errorResponse);
+      res.sendStatus(err.statusCode).json(errorResponse);
     } else {
       this.logger.error(`${err.message}`);
       const errorResponse: APIErrorResult = {
@@ -45,7 +45,7 @@ export class ExceptionFilter<T> implements IExceptionFilter {
           },
         ],
       };
-      res.status(500).json(errorResponse);
+      res.sendStatus(500).json(errorResponse);
     }
   }
 }

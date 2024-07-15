@@ -24,7 +24,7 @@ export abstract class BaseController {
 
   public send<T>(res: Response, code: number, message: T): ExpressReturnType {
     res.type("application/json");
-    return res.status(HttpStatusCodes.OK).json(message);
+    return res.sendStatus(HttpStatusCodes.OK).json(message);
   }
 
   public ok<T>(res: Response, message: T): ExpressReturnType {

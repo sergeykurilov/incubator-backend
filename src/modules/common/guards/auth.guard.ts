@@ -7,7 +7,7 @@ export class AuthGuard implements IMiddleware {
     const auth = req.headers["authorization"] as string;
 
     if (!auth) {
-      res.status(HttpStatusCodes.UNAUTHORIZED).send("Unauthorized");
+      res.sendStatus(HttpStatusCodes.UNAUTHORIZED).send("Unauthorized");
       return;
     }
 

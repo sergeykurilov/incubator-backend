@@ -20,7 +20,6 @@ export class App {
   app: Express;
   server: Server;
   port: number;
-  config: IConfigService;
 
   constructor(
     @inject(SERVICE_IDENTIFIER.ILogger) private logger: ILogger,
@@ -47,7 +46,7 @@ export class App {
     private mongoDbService: MongoDBService,
   ) {
     this.app = express();
-    this.port = 8300;
+    this.port = Number(this.configService.get("PORT")) || 8300;
   }
 
   useMiddleware(): void {

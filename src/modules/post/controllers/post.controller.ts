@@ -53,71 +53,59 @@ export class PostController extends BaseController implements IPostController {
     ]);
   }
 
-  async getAll(req: Request, res: Response, next: NextFunction): Promise<void> {
+  async getAll(req: Request, res: Response, next: NextFunction) {
     try {
       const blogs = await this.postService.findAll();
-      res.json(blogs);
+      return res.json(blogs);
     } catch (error) {
-      next(error);
+      return next(error);
     }
   }
 
-  async create(req: Request, res: Response, next: NextFunction): Promise<void> {
+  async create(req: Request, res: Response, next: NextFunction) {
     try {
       await this.postService.create(req.body);
-      this.created(res);
+      return this.created(res);
     } catch (error) {
-      next(error);
+      return next(error);
     }
   }
 
-  async update(req: Request, res: Response, next: NextFunction): Promise<void> {
+  async update(req: Request, res: Response, next: NextFunction) {
     try {
       await this.postService.update(String(req.params.id!), req.body);
-      this.created(res);
+      return this.created(res);
     } catch (error) {
-      next(error);
+      return next(error);
     }
   }
-  async getById(
-    req: RequestWithParams,
-    res: Response,
-    next: NextFunction,
-  ): Promise<void> {
+  async getById(req: RequestWithParams, res: Response, next: NextFunction) {
     try {
       const blog = await this.postService.findById(String(req.params.id!));
-      res.status(HttpStatusCodes.OK).json(blog);
+      return res.sendStatus(HttpStatusCodes.OK).json(blog);
     } catch (error) {
-      next(error);
+      return next(error);
     }
   }
 
-  async deleteById(
-    req: RequestWithParams,
-    res: Response,
-    next: NextFunction,
-  ): Promise<void> {
+  async deleteById(req: RequestWithParams, res: Response, next: NextFunction) {
     try {
       const id = req.params.id!;
       const video = await this.postService.deleteById(String(id));
 
-      res.status(HttpStatusCodes.OK).json(video);
+      return res.sendStatus(HttpStatusCodes.OK).json(video);
     } catch (error) {
-      next(error);
+      return next(error);
     }
   }
 
-  async deleteAll(
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ): Promise<void> {
+  async deleteAll(req: Request, res: Response, next: NextFunction) {
     try {
       await this.postService.deleteAll();
 
-      res.status(HttpStatusCodes.OK);
+      return res.sendStatus(HttpStatusCodes.OK);
     } catch (error) {
-      next(error);
+      return next(error);
     }
   }
 }
