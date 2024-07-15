@@ -27,7 +27,6 @@ import { IPostController } from "./modules/post/controllers/post.controller.inte
 import { PostController } from "./modules/post/controllers/post.controller";
 import { PostRepository } from "./modules/post/repositories/post.repository";
 import { IPostRepository } from "./modules/post/repositories/post.repository.interface";
-import dotenv from "dotenv";
 export interface IBootstrapReturn {
   appContainer: Container;
   app: App;
@@ -81,18 +80,11 @@ export const appBindings = new ContainerModule((bind: interfaces.Bind) => {
     .inSingletonScope();
 });
 
-async function bootstrap(): Promise<IBootstrapReturn> {
-  dotenv.config();
-  const appContainer = new Container();
-  appContainer.load(appBindings);
-  const app = appContainer.get<App>(SERVICE_IDENTIFIER.Application);
+const appContainer = new Container();
+appContainer.load(appBindings);
+const app = appContainer.get<App>(SERVICE_IDENTIFIER.Application);
 
-  await app.init().catch((error) => {
-    console.error("Error during initialization:", error);
-    app.close();
-  });
-
-  return { appContainer, app };
-}
-
-export default bootstrap;
+app.init().catch((error) => {
+  console.error("Error during initialization:", error);
+  app.close();
+});
