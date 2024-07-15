@@ -45,7 +45,7 @@ export class App {
     private mongoDbService: MongoDBService,
   ) {
     this.app = express();
-    this.port = Number(process.env.PORT) || 3000;
+    this.port = 3000;
   }
 
   useMiddleware(): void {
@@ -75,7 +75,7 @@ export class App {
     this.useRoutes();
     this.useExceptionFilters();
     await this.mongoDbService.connect();
-    this.server = this.app.listen(8080);
+    this.server = this.app.listen(3000);
     this.logger.log(`Server running on http://localhost:${this.port}`);
   }
 
