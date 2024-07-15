@@ -25,7 +25,7 @@
     "winston": "^3.13.1"
   },
   "scripts": {
-    "dev": "nodemon --inspect dist/index.js",
+    "dev": "nodemon --inspect dist/index.js --PORT=$PORT",
     "start": "nodemon dist/index.js",
     "build": "rimraf dist && tsc",
     "watch": "tsc -w",
