@@ -23,10 +23,7 @@ export class AuthGuard implements IMiddleware {
     const decodedData = Buffer.from(token, "base64").toString();
     const [login, password] = decodedData.split(":");
 
-    if (
-      login !== process.env.AUTH_LOGIN ||
-      password !== process.env.AUTH_PASSWORD
-    ) {
+    if (login !== "admin" || password !== "qwerty") {
       res.sendStatus(HttpStatusCodes.UNAUTHORIZED);
       return;
     }

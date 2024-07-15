@@ -18,7 +18,8 @@ export class MongoDBService implements IMongoDBService {
   async connect(): Promise<void> {
     try {
       if (!this.mongooseInstance) {
-        const uri = this.configService.get("MONGODB_URI");
+        const uri =
+          "mongodb+srv://user_001:q92e01klsd14@cluster0.ak8nd.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 
         if (!uri) {
           throw new Error("MONGODB_URI is not defined in config.");
