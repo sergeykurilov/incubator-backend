@@ -46,8 +46,7 @@ export class App {
     private mongoDbService: MongoDBService,
   ) {
     this.app = express();
-    console.log(process.env.PORT);
-    this.port = Number(process.env.PORT) || 8300;
+    this.port = 8300;
   }
 
   useMiddleware(): void {
