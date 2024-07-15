@@ -20,7 +20,8 @@
     "reflect-metadata": "^0.2.1",
     "supertest": "^6.3.4",
     "ts-jest": "^29.1.1",
-    "tslog": "^4.9.2"
+    "tslog": "^4.9.2",
+    "winston": "^3.13.1"
   },
   "scripts": {
     "dev": "nodemon --inspect dist/index.js",

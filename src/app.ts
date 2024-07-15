@@ -13,6 +13,7 @@ import { IExceptionFilter } from "./modules/common/exceptions/exception.filter.i
 import { IBlogService } from "./modules/blog/services/blog.service.interface";
 import { IPostController } from "./modules/post/controllers/post.controller.interface";
 import { IPostService } from "./modules/post/services/post.service.interface";
+import { createLogger, format, transports } from "winston";
 
 @injectable()
 export class App {
@@ -49,32 +50,49 @@ export class App {
   }
 
   useMiddleware(): void {
+    const logger = createLogger({
+      level: "info",
+      format: format.combine(
+        format.timestamp({
+          format: "YYYY-MM-DD HH:mm:ss",
+        }),
+        format.printf(
+          (info) => `${info.timestamp} ${info.level}: ${info.message}`,
+        ),
+      ),
+      transports: [new transports.Console()],
+    });
+
     this.app.use(express.json());
+    this.app.use((req, res, next) => {
+      logger.info(`Incoming request: ${req.method} ${req.url}`);
+      next();
+    });
   }
 
   useRoutes(): void {
     this.app.use("/videos", this.videoController.router);
-    // this.app.use("/blogs", this.blogController.router);
-    // this.app.use("/posts", this.postController.router);
-    // this.app.delete("/testing/all-data", async (req, res, next) => {
-    //   try {
-    //     await this.videoService.deleteAll();
-    //     res.sendStatus(204);
-    //   } catch (error) {
-    //     next(error);
-    //   }
-    // });
+    this.app.use("/blogs", this.blogController.router);
+    this.app.use("/posts", this.postController.router);
+    this.app.delete("/testing/all-data", async (req, res, next) => {
+      try {
+        await this.videoService.deleteAll();
+        res.sendStatus(204);
+      } catch (error) {
+        next(error);
+      }
+    });
   }
 
   useExceptionFilters(): void {
-    // this.app.use(this.exceptionFilter.catch.bind(this.exceptionFilter));
+    this.app.use(this.exceptionFilter.catch.bind(this.exceptionFilter));
   }
 
   public async init(): Promise<void> {
-    // this.useMiddleware();
+    this.useMiddleware();
     this.useRoutes();
-    // this.useExceptionFilters();
-    // await this.mongoDbService.connect();
+    this.useExceptionFilters();
+    await this.mongoDbService.connect();
     this.server = this.app.listen(this.port);
     this.logger.log(`Server running on http://localhost:${this.port}`);
   }
