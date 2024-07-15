@@ -24,7 +24,7 @@
   },
   "scripts": {
     "dev": "nodemon --inspect dist/index.js",
-    "start": "nodemon src/index.ts",
+    "start": "nodemon dist/index.js",
     "build": "rimraf dist && tsc",
     "watch": "tsc -w",
     "jest": "jest -i",
