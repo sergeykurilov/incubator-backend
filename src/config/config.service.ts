@@ -11,7 +11,7 @@ export class ConfigService implements IConfigService {
 
   constructor(@inject(SERVICE_IDENTIFIER.ILogger) private logger: ILogger) {
     const result: DotenvConfigOutput = config({
-      path: path.resolve(__dirname, "./.env"),
+      path: path.resolve(__dirname, "../../.env"), // Adjusted path to reach the root directory
     });
     if (result.error) {
       this.logger.error(
