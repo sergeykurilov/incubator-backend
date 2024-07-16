@@ -56,7 +56,7 @@ export class PostController extends BaseController implements IPostController {
   async getAll(req: Request, res: Response, next: NextFunction) {
     try {
       const blogs = await this.postService.findAll();
-      return res.json(blogs);
+      return res.status(HttpStatusCodes.OK).json(blogs);
     } catch (error) {
       return next(error);
     }
@@ -65,7 +65,7 @@ export class PostController extends BaseController implements IPostController {
   async create(req: Request, res: Response, next: NextFunction) {
     try {
       await this.postService.create(req.body);
-      return this.created(res);
+      return res.sendStatus(HttpStatusCodes.OK);
     } catch (error) {
       return next(error);
     }
@@ -74,7 +74,7 @@ export class PostController extends BaseController implements IPostController {
   async update(req: Request, res: Response, next: NextFunction) {
     try {
       await this.postService.update(String(req.params.id!), req.body);
-      return this.created(res);
+      return res.sendStatus(HttpStatusCodes.NO_CONTENT);
     } catch (error) {
       return next(error);
     }
@@ -103,7 +103,7 @@ export class PostController extends BaseController implements IPostController {
     try {
       await this.postService.deleteAll();
 
-      return res.status(HttpStatusCodes.OK).send();
+      return res.sendStatus(HttpStatusCodes.OK);
     } catch (error) {
       return next(error);
     }

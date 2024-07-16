@@ -72,7 +72,7 @@ export class VideoController
   ): Promise<void> {
     try {
       await this.videoService.deleteAll();
-      res.status(HttpStatusCodes.CREATED).send();
+      res.sendStatus(HttpStatusCodes.CREATED);
     } catch (error) {
       this.loggerService.error("Error getting all videos", error);
       next(error);
@@ -83,7 +83,7 @@ export class VideoController
     const video = await this.videoService.findById(+id);
 
     if (!video?.id) {
-      res.status(HttpStatusCodes.NOT_FOUND).send();
+      res.sendStatus(HttpStatusCodes.NOT_FOUND);
       return;
     }
 
@@ -94,9 +94,9 @@ export class VideoController
     const video = await this.videoService.deleteById(+id);
 
     if (!video) {
-      res.status(HttpStatusCodes.NOT_FOUND).send();
+      res.sendStatus(HttpStatusCodes.NOT_FOUND);
     } else {
-      res.status(HttpStatusCodes.NO_CONTENT).send();
+      res.sendStatus(HttpStatusCodes.NO_CONTENT);
     }
   }
 

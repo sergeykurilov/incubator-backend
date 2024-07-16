@@ -60,12 +60,12 @@ export class BlogController extends BaseController implements IBlogController {
     ]);
   }
 
-  async getAll(req: Request, res: Response, next: NextFunction): Promise<void> {
+  async getAll(req: Request, res: Response, next: NextFunction) {
     try {
       const blogs = await this.blogService.findAll();
-      res.json(blogs);
+      return res.status(HttpStatusCodes.OK).json(blogs);
     } catch (error) {
-      next(error);
+      return next(error);
     }
   }
 
@@ -114,7 +114,7 @@ export class BlogController extends BaseController implements IBlogController {
     try {
       await this.blogService.deleteAll();
 
-      return res.status(HttpStatusCodes.OK).send();
+      return res.sendStatus(HttpStatusCodes.OK);
     } catch (error) {
       return next(error);
     }
