@@ -114,7 +114,7 @@ export class BlogController extends BaseController implements IBlogController {
     try {
       await this.blogService.deleteAll();
 
-      return res.status(HttpStatusCodes.OK);
+      return res.status(HttpStatusCodes.OK).send();
     } catch (error) {
       return next(error);
     }
