@@ -85,7 +85,7 @@ export class BlogController extends BaseController implements IBlogController {
   async update(req: Request, res: Response, next: NextFunction) {
     try {
       await this.blogService.update(String(req.params.id!), req.body);
-      return this.created(res);
+      return this.updated(res);
     } catch (error) {
       return next(error);
     }

@@ -35,6 +35,10 @@ export abstract class BaseController {
     return res.status(HttpStatusCodes.CREATED);
   }
 
+  public updated(res: Response): ExpressReturnType {
+    return res.status(HttpStatusCodes.NO_CONTENT);
+  }
+
   protected bindRoutes(routes: IControllerRoute[]): void {
     for (const route of routes) {
       this.logger.log(`[${route.method}] ${route.path}`);
