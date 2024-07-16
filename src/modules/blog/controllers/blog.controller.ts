@@ -76,7 +76,7 @@ export class BlogController extends BaseController implements IBlogController {
   ): Promise<Response<IBlogEntity> | void> {
     try {
       const blog = await this.blogService.create(req.body);
-      return res.send(HttpStatusCodes.CREATED).json(blog);
+      return res.status(HttpStatusCodes.CREATED).json(blog);
     } catch (error) {
       return next(error);
     }
