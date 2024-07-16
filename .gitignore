@@ -8,7 +8,6 @@ for more about ignoring files.
 /dist
 # testing
 /coverage
-.env
 # production
 /build
 
