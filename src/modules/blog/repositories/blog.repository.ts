@@ -34,7 +34,7 @@ export class BlogRepository implements IBlogRepository {
     });
   }
 
-  create(createBlogDto: BlogDto): Promise<number> {
+  create(createBlogDto: BlogDto): Promise<IBlogEntity> {
     const lastBlog = blogDb.blogs[blogDb.blogs.length - 1];
     const newBlogId = lastBlog ? String(Number(lastBlog.id) + 1) : "0";
 
@@ -45,7 +45,7 @@ export class BlogRepository implements IBlogRepository {
 
     return new Promise((resolve) => {
       blogDb.blogs.push(newBlog);
-      resolve(HttpStatusCodes.CREATED);
+      resolve(newBlog);
     });
   }
 

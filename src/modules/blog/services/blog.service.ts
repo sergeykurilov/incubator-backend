@@ -18,7 +18,7 @@ export class BlogService implements IBlogService {
     return this.blogRepository.findAll();
   }
 
-  create(createBlogDto: BlogDto): Promise<number> {
+  create(createBlogDto: BlogDto): Promise<IBlogEntity> {
     return this.blogRepository.create(createBlogDto);
   }
 

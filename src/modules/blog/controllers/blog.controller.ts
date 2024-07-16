@@ -12,6 +12,7 @@ import { LoggerService } from "../../common/logger/logger.service";
 import { AuthGuard } from "../../common/guards/auth.guard";
 import { EntityGuard } from "../../common/guards/entity.guard";
 import { BlogDto } from "./dto/blog.dto";
+import { IBlogEntity } from "../entity/blog";
 
 export class BlogController extends BaseController implements IBlogController {
   constructor(
@@ -68,12 +69,16 @@ export class BlogController extends BaseController implements IBlogController {
     }
   }
 
-  async create(req: Request, res: Response, next: NextFunction): Promise<void> {
+  async create(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<Response<IBlogEntity> | void> {
     try {
-      await this.blogService.create(req.body);
-      this.created(res);
+      const blog = await this.blogService.create(req.body);
+      return res.send(HttpStatusCodes.CREATED).json(blog);
     } catch (error) {
-      next(error);
+      return next(error);
     }
   }
 
