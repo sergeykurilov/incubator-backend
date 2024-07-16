@@ -93,7 +93,7 @@ export class BlogController extends BaseController implements IBlogController {
   async getById(req: RequestWithParams, res: Response, next: NextFunction) {
     try {
       const blog = await this.blogService.findById(String(req.params.id!));
-      return res.sendStatus(HttpStatusCodes.OK).json(blog);
+      return res.status(HttpStatusCodes.OK).json(blog);
     } catch (error) {
       return next(error);
     }
@@ -102,9 +102,9 @@ export class BlogController extends BaseController implements IBlogController {
   async deleteById(req: RequestWithParams, res: Response, next: NextFunction) {
     try {
       const id = req.params.id!;
-      const video = await this.blogService.deleteById(String(id));
+      const blog = await this.blogService.deleteById(String(id));
 
-      return res.sendStatus(HttpStatusCodes.OK).json(video);
+      return res.status(HttpStatusCodes.OK).json(blog);
     } catch (error) {
       return next(error);
     }
@@ -114,7 +114,7 @@ export class BlogController extends BaseController implements IBlogController {
     try {
       await this.blogService.deleteAll();
 
-      return res.sendStatus(HttpStatusCodes.OK);
+      return res.status(HttpStatusCodes.OK);
     } catch (error) {
       return next(error);
     }

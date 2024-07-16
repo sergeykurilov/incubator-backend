@@ -77,7 +77,7 @@ export class App {
     this.app.delete("/testing/all-data", async (req, res, next) => {
       try {
         await this.videoService.deleteAll();
-        res.sendStatus(204);
+        res.status(204);
       } catch (error) {
         next(error);
       }

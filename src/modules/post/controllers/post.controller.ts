@@ -82,7 +82,7 @@ export class PostController extends BaseController implements IPostController {
   async getById(req: RequestWithParams, res: Response, next: NextFunction) {
     try {
       const blog = await this.postService.findById(String(req.params.id!));
-      return res.sendStatus(HttpStatusCodes.OK).json(blog);
+      return res.status(HttpStatusCodes.OK).json(blog);
     } catch (error) {
       return next(error);
     }
@@ -93,7 +93,7 @@ export class PostController extends BaseController implements IPostController {
       const id = req.params.id!;
       const video = await this.postService.deleteById(String(id));
 
-      return res.sendStatus(HttpStatusCodes.OK).json(video);
+      return res.status(HttpStatusCodes.OK).json(video);
     } catch (error) {
       return next(error);
     }
@@ -103,7 +103,7 @@ export class PostController extends BaseController implements IPostController {
     try {
       await this.postService.deleteAll();
 
-      return res.sendStatus(HttpStatusCodes.OK);
+      return res.status(HttpStatusCodes.OK).send();
     } catch (error) {
       return next(error);
     }

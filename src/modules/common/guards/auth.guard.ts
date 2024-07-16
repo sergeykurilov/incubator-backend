@@ -7,14 +7,14 @@ export class AuthGuard implements IMiddleware {
     const auth = req.headers["authorization"] as string;
 
     if (!auth) {
-      res.sendStatus(HttpStatusCodes.UNAUTHORIZED).send("Unauthorized");
+      res.status(HttpStatusCodes.UNAUTHORIZED).send("Unauthorized");
       return;
     }
 
     const [basic, token] = auth.split(" ");
 
     if (basic !== "Basic") {
-      res.sendStatus(HttpStatusCodes.UNAUTHORIZED);
+      res.status(HttpStatusCodes.UNAUTHORIZED).send();
       return;
     }
 
@@ -22,7 +22,7 @@ export class AuthGuard implements IMiddleware {
     const [login, password] = decodedData.split(":");
 
     if (login !== "admin" || password !== "qwerty") {
-      res.sendStatus(HttpStatusCodes.UNAUTHORIZED);
+      res.status(HttpStatusCodes.UNAUTHORIZED).send();
       return;
     }
 

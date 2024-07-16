@@ -30,7 +30,7 @@ export class EntityGuard {
         errorsMessages: errorMessages,
       };
 
-      return res.sendStatus(HttpStatusCodes.BAD_REQUEST).json(apiErrorResult);
+      return res.status(HttpStatusCodes.BAD_REQUEST).json(apiErrorResult);
     }
 
     return next();
